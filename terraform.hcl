@@ -17,7 +17,7 @@
 product "terraform-ent" {
 # select specific commands to run
   selects = ["replicatedctl preflight run", #1
-             "replicated admin health-check", #2
+             "GET /_health_check?full=1", #2
              "replicatedctl params export", #3
              "replicatedctl app-config view --group installation", #4
              "replicatedctl app-config view --group production", #5
@@ -41,9 +41,8 @@ product "terraform-ent" {
   }
 
 # check health-check items are green
-  command {
-    run = "replicated admin health-check"
-    format = "string"
+  GET {
+    path = "/_health_check?full=1"
   }
 
 # check preflight is still passing
