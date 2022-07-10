@@ -107,7 +107,18 @@ product "vault" {
              "vault version", #5
              "vault audit list -format=json", #7
              "vault operator usage -format=json", #11
-             "vault license get -format=json"] #12
+             "vault license get -format=json",
+             "GET /v1/sys/health",
+             "GET /v1/sys/storage/raft/snapshot-auto/config?list=true",
+             "GET /v1/sys/storage/raft/autopilot/state", 
+             "GET /v1/kmip/config",
+             "vault secrets list -format=json",
+             "GET /v1/sys/ha-status",
+             "GET /v1/sys/sealwrap/rewrap",
+             "GET /v1/sys/rotate/config",
+             "GET /v1/sys/replication/status"]
+
+]
 
 # check vault usage on vault 1.6+
   command {
@@ -189,8 +200,50 @@ product "vault" {
     format = "json"
   }
 
-# example API request
+# check vault ent license
   GET {
-    path = "/v1/sys/leader"
+    path = "/v1/sys/health"
   }
+
+# check snapshot config
+  GET {
+    path = "/v1/sys/storage/raft/snapshot-auto/config?list=true"
+  }
+
+# check storage autopilot, redundancy zones, and automated upgrades
+  GET {
+    path = "/v1/sys/storage/raft/autopilot/state"
+  }
+
+# read kmpi secrets engine
+  GET {
+    path = "/v1/kmip/config"
+  }
+
+# read high availability mode status
+  GET {
+    path = "/v1/sys/ha-status"
+  }
+
+# read kmip secrets engine
+  command {
+    run = "vault secrets list -format=json"
+    format = "json"
+  }
+
+# check seal wrapping
+  GET {
+    path = "/v1/sys/sealwrap/rewrap"
+  } 
+
+# check automated encryption key rotation
+  GET {
+    path = "/v1/sys/rotate/config"
+  }
+
+  # check replication status
+  GET {
+    path = "/v1/sys/replication/status"
+  }  
+
 }
