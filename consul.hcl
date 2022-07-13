@@ -81,10 +81,8 @@ product "consul" {
 
 # check metrics are enabled
   GET {
-    path = "/v1/agent/metrics" # '.meta.'
+    path = "/v1/agent/metrics" # '.'
   }
-
-
 
 # check configuration is valid
   command {
@@ -98,13 +96,13 @@ product "consul" {
     format = "string"
   }
 
-  # check for SSO and k8s auth
+# check for SSO and k8s auth
   command {
     run = "consul acl auth-method list"
     format = "string"
   }
 
-  # check for Network Segments
+# check for Network Segments
   command {
     run = "consul members"
     format = "string"
@@ -116,28 +114,28 @@ product "consul" {
     format = "string"
   }
 
-# check metrics are enabled
+# check
   GET {
-    path = "/v1/v1/catalog/datacenters" # '.meta.'
+    path = "/v1/catalog/datacenters" # '.'
   }
 
-# check metrics are enabled
+# check
   GET {
-    path = "/v1/partitions" # '.meta.'
+    path = "/v1/partitions" # '.'
   }
 
-# check metrics are enabled
+# check
   GET {
-    path = "/v1/namespaces" # '.meta.'
+    path = "/v1/namespaces" # '.'
   }
 
-# check metrics are enabled
+# check
   GET {
-    path = "/v1/catalog/services" # '.meta.'
+    path = "/v1/catalog/services" # '.'
   }
 
-# check metrics are enabled
+# check
   GET {
-    path = "/v1/catalog/nodes" # '.meta.'
+    path = "/v1/catalog/nodes" # '.'
   }
 }
