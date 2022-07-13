@@ -107,7 +107,11 @@ product "vault" {
               "vault secrets list -format=json",
               "vault operator raft list-peers -format=json",
               "vault operator raft autopilot state -format=json",
-              "vault operator raft autopilot get-config -format=json"
+              "vault operator raft autopilot get-config -format=json",
+              "GET /v1/kmip/config",
+              "GET /v1/sys/sealwrap/rewrap",
+              "GET /v1/sys/rotate/config",
+              "GET /v1/sys/replication/status"
             ]
 
 # check health endpoint for version, license.expiry_time, replication_dr_mode
@@ -172,4 +176,24 @@ product "vault" {
     run = "vault operator raft autopilot get-config -format=json"
     format = "json"
   }
+
+# Check if KMIP is in use
+  GET {
+    path = "/v1/kmip/config"
+    }
+
+# Check if seal wrap is in use
+  GET {
+    path = "/v1/sys/sealwrap/rewrap"
+    }
+
+# Check key rotation
+  GET {
+    path = "/v1/sys/rotate/config"
+    }
+
+# Check replication status
+  GET {
+    path = "/v1/sys/replication/status"
+    }
 }
