@@ -31,8 +31,9 @@ product "terraform-ent" {
               "replicatedctl params export",
               "replicatedctl app-config export --template 'Concurrency\t{{.capacity_concurrency.Value}}\nMemory\t{{.capacity_memory.Value}}\nCPU_limit\t{{.capacity_cpus.Value}}\n'",
               "GET /api/v2/admin/general-settings",
+              "GET /api/v2/admin/runs?page%5Bsize%5D=1",
               "GET /api/v2/admin/organizations?page%5Bsize%5D=1",
-              "replicatedctl snapshot ls",
+              "replicatedctl snapshot ls --output json",
               "GET /api/v2/admin/cost-estimation-settings"
             ]
 
@@ -107,12 +108,17 @@ product "terraform-ent" {
 
 # check snapshots are configured and in use
   command {
-    run = "replicatedctl snapshot ls"
-    format = "string"
+    run = "replicatedctl snapshot ls --output json"
+    format = "json"
   }
 
 # check cost estimation is configured and in use
   GET {
     path = "/api/v2/admin/cost-estimation-settings" # '.data.attributes.enabled'
+  }
+
+# check SAML is configured and in use
+  GET {
+    path = "/api/v2/admin/saml-settings" # '.data.attributes.enabled'
   }
 }
