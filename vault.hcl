@@ -132,7 +132,7 @@ product "vault" {
 
 # get vault config outside of vault debug
   GET {
-    path = "GET /v1/sys/config/state/sanitized" # '.data.listeners'
+    path = "/v1/sys/config/state/sanitized" # '.data.listeners'
   }
 
 # check 2+ audit devices
