@@ -5,7 +5,6 @@ host {
               "kubectl exec vault-0 -- ps u -o user",
               "kubectl get statefulset --all-namespaces -o json",
               "kubectl get cm --all-namespaces -o json",
-              "kubectl get pods --selector='app.kubernetes.io/name=consul'"
             ]
 # check vault is running as vault user
   command {
@@ -23,13 +22,6 @@ host {
   command {
     run = "kubectl get cm --all-namespaces -o json"
     format = "json"
-  }
-
-
-# check for consul
-  command {
-    run ="kubectl get pods --selector='app.kubernetes.io/name=consul'"
-    format = "string"
   }
 }
 
