@@ -16,7 +16,9 @@ host {
               "systemctl show vault --property=NoNewPrivileges",
               "consul info",
               "nomad agent-info",
-              "dpkg-query -W vault-enterprise",
+              "rpm -qi vault-enterprise || dpkg-query -W vault-enterprise",
+              "apt-cache policy vault-enterprise | grep -B 2 /var/lib/dpkg/status",
+              "yum info vault-enterprise | grep -E ^From",
               "ls -ldF /opt/vault"
             ]
 
@@ -70,18 +72,27 @@ host {
 
 # check for nomad and consul
   command {
-    run ="nomad agent-info"
+    run = "nomad agent-info"
     format = "string"
   } 
   command {
-    run ="consul info"
+    run = "consul info"
     format = "string"
   } 
 
 # check vault is installed using package not binary
-  command {
-    run = "dpkg-query -W vault-enterprise"
-    format = "string"
+  shell {
+    run = "rpm -qi vault-enterprise || dpkg-query -W vault-enterprise"
+  }
+
+# check vault package repo source (apt)
+  shell {
+    run = "apt-cache policy vault-enterprise | grep -B 2 /var/lib/dpkg/status"
+  }
+
+# check vault package repo source (yum/dnf)
+  shell {
+    run = "yum info vault-enterprise | grep -E ^From"
   }
 
 # check ownership on /opt/vault
@@ -94,6 +105,7 @@ host {
 product "vault" {
   selects = [ # Executive Checks
               "GET /v1/sys/health",
+              "GET /v1/sys/license/status",
               "GET /v1/sys/storage/raft/snapshot-auto/config?list=true",
               "vault operator usage -format=json",
               "GET /v1/sys/config/state/sanitized",
@@ -109,6 +121,7 @@ product "vault" {
               "vault operator raft autopilot state -format=json",
               "vault operator raft autopilot get-config -format=json",
               "GET /v1/kmip/config",
+              "GET /v1/sys/seal-status"
               "GET /v1/sys/sealwrap/rewrap",
               "GET /v1/sys/rotate/config",
               "GET /v1/sys/replication/status"
@@ -117,6 +130,11 @@ product "vault" {
 # check health endpoint for version, license.expiry_time, replication_dr_mode
   GET {
     path = "/v1/sys/health"
+  }
+
+# check license status
+  GET {
+    path = "/v1/sys/license/status"
   }
 
 # check if snapshots are configured
@@ -182,18 +200,23 @@ product "vault" {
     path = "/v1/kmip/config"
     }
 
-# Check if seal wrap is in use
+# Check seal wrap config
+  GET {
+    path = "/v1/sys/seal-status"
+  }
+
+# Check if seal rewrapping is in progress
   GET {
     path = "/v1/sys/sealwrap/rewrap"
-    }
+  }
 
 # Check key rotation
   GET {
     path = "/v1/sys/rotate/config"
-    }
+  }
 
 # Check replication status
   GET {
     path = "/v1/sys/replication/status"
-    }
+  }
 }
