@@ -10,11 +10,13 @@ Process to run hcdiag and share the results with HashiCorp:
 - Set the necessary environment variables so hcdiag can query the product:
   - For Vault Enterprise, the `VAULT_TOKEN` and `VAULT_ADDR` environment variables must be set
   - For Terraform Enterprise, the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables must be set
+  - For Terraform Cloud, the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables must be set. In addition, configure a `TFE_ORG` variable to identify your Terraform Cloud Organization.
   - For Consul Enterprise, the `CONSUL_TOKEN` and `CONSUL_HTTP_ADDR` environment variables must be set
 - hcdiag is best run by a superuser account or the account running the respective product
 - Run hcdiag with specific configuration:
   - Vault Enterprise: `hcdiag -vault -config /path/to/hcdiag_vault.hcl`
-  - Terraform Enterprise: `hcdiag -terraform -config /path/to/hcdiag_terraform.hcl`
+  - Terraform Enterprise: `hcdiag -terraform-ent -config /path/to/hcdiag_terraform.hcl`
+  - Terraform Cloud: `hcdiag -terraform-ent -config /path/to/hcdiag_terraform_cloud.hcl`
   - Consul Enterprise: `hcdiag -consul -config /path/to/hcdiag_consul.hcl`
 - Submit the bundle to HashiCorp via the HashiCorp SendSafely portal link shared by your CSM
 
