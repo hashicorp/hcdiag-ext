@@ -4,8 +4,16 @@ Modified hcdiag configuration for use by HashiCorp Technical Field Operations.
 
 Process to run hcdiag and share the results with HashiCorp:
 
-- Download [hcdiag v0.5.0](https://releases.hashicorp.com/hcdiag/0.5.0/) or use your package manager to install version 0.5.0-1
-- Download this extended configuration for hcdiag from https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.5.0.zip [^1]
+- Use your package manager to install hcdiag (0.5.0-1) or download [hcdiag v0.5.0](https://releases.hashicorp.com/hcdiag/0.5.0/) manually:
+  ```sh
+  # Example package install steps
+  curl -fsSL https://apt.releases.hashicorp.com/gpg > /tmp/hashicorp.key
+  apt-key add < /tmp/hashicorp.key
+  apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  apt-get update --fix-missing
+  apt-get install hcdiag="0.5.0-1" --yes
+  ```
+- Download  [hcdiag-ext v0.4.0 release package](https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.0.zip) of this extended configuration [^1]
 - Extract the hcdiag binary from the package and the `hcdiag_<tool>.hcl` file from the zip (from step 2) on the server instances running the respective product
 - Set the necessary environment variables so hcdiag can query the product:
   - For Vault Enterprise, the `VAULT_TOKEN` and `VAULT_ADDR` environment variables must be set
