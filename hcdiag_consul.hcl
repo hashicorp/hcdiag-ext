@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 host {
   selects = [ # Configuration Checks
               "ps u -C consul", "ps u -C nomad", "ps u -C vault", "nomad agent-info",
