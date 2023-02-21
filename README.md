@@ -17,6 +17,7 @@ Process to run hcdiag and share the results with HashiCorp:
 - Extract the hcdiag binary from the package and the `hcdiag_<tool>.hcl` file from the zip (from step 2) on the server instances running the respective product
 - Set the necessary environment variables so hcdiag can query the product:
   - For Vault Enterprise, the `VAULT_TOKEN` and `VAULT_ADDR` environment variables must be set
+    - An example policy for hcdiag-ext (`hcdiag_vault_policy.hcl`) is contained in this release to limit the scope hcdiag has within Vault 
   - For Terraform Enterprise, the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables must be set
   - For Consul Enterprise, the `CONSUL_TOKEN` and `CONSUL_HTTP_ADDR` environment variables must be set
 - hcdiag is best run by a superuser account or the account running the respective product
