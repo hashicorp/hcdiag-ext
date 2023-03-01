@@ -6,12 +6,17 @@ Process to run hcdiag and share the results with HashiCorp:
 
 1. Use your package manager to install hcdiag (0.5.0-1) or download [hcdiag v0.5.0](https://releases.hashicorp.com/hcdiag/0.5.0/) manually:
     ```sh
-    # Example package install steps
+    # Example Debian package install steps
     curl -fsSL https://apt.releases.hashicorp.com/gpg > /tmp/hashicorp.key
     apt-key add < /tmp/hashicorp.key
     apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
     apt-get update --fix-missing
     apt-get install hcdiag="0.5.0-1" --yes
+    
+    # Example RHEL package install steps
+    yum install -y yum-utils git jq unzip ca-certificates
+    yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+    yum install hcdiag-0.5.0-1 -y
     ```
 1. Download  [hcdiag-ext v0.4.0 release package](https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.0.zip) of this extended configuration [^1]
 1. Extract the `hcdiag_<tool>.hcl` file from the hcdiag-ext zip (from the above step) on the server instances running the respective product
