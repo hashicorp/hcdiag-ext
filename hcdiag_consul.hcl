@@ -3,46 +3,54 @@
 
 # Consul Enterprise checks
 
+host {
+  selects = ["dpkg-query -W consul-enterprise","rpm -q consul-enterprise"]
+  command {
+    run = "dpkg-query -W consul-enterprise"
+    format = "string"
+  }
+  command {
+    run = "rpm -q consul-enterprise"
+    format = "string"
+  }
+}
+
 product "consul" {
   selects = [
-              "consul version -format=json",
-              "consul license get",
-              "consul catalog services | grep -i 'consul-snapshot'",
-              "consul operator autopilot get-config",
               "GET /v1/agent/self",
-              "GET /v1/agent/metrics",
+              "GET /v1/catalog/services",
+              "GET /v1/catalog/services?filter%5BServiceName%5D=consul-snapshot",
+              "GET /v1/operator/autopilot/configuration",
+              "GET /v1/operator/license",
+              "GET /v1/operator/usage?global=true"
             ]
 
 # check consul version is recent
-  command {
-    run = "consul version -format=json"
-    format = "json"
+  GET {
+    path = "/v1/agent/self"
   }
 
-# check consul license
-  command {
-    run = "consul license get"
-    format = "string"
+# get services list and count
+  GET {
+    path = "/v1/catalog/services"
   }
 
 # check if consul snapshot service is running for automated backups
-  shell {
-    run ="consul catalog services | grep -i 'consul-snapshot'"
-  }
-
-# get autopilot configuration for review
-  command {
-    run = "consul operator autopilot get-config"
-    format = "string"
-  }
-
-# check ACLs, end-to-end TLS and audit logs in use '.DebugConfig.ACLsEnabled' & '.DebugConfig.TLS.HTTPS' & '.DebugConfig.EnterpriseRuntimeConfig.AuditEnabled' & '.DebugConfig.EnterpriseRuntimeConfig.AuditSinks'
   GET {
-    path = "/v1/agent/self" 
+    path = "/v1/catalog/services?filter%5BServiceName%5D=consul-snapshot"
   }
 
-# check metrics are enabled
+# check autopilot is configured
   GET {
-    path = "/v1/agent/metrics"
+    path = "/v1/operator/autopilot/configuration"
   }
-}
+  
+# check consul license
+  GET {
+    path = "/v1/operator/license"
+  }
+
+# check consul usage
+  GET {
+    path = "/v1/operator/usage?global=true"
+  }
