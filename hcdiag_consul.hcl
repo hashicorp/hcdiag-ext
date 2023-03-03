@@ -19,7 +19,7 @@ product "consul" {
   selects = [
               "GET /v1/agent/self",
               "GET /v1/catalog/services",
-              "GET /v1/catalog/services?filter%5BServiceName%5D=consul-snapshot",
+              "GET /v1/catalog/services?filter='ServiceName==%22consul-snapshot%22'",
               "GET /v1/operator/autopilot/configuration",
               "GET /v1/operator/license",
               "GET /v1/operator/usage?global=true"
@@ -37,7 +37,7 @@ product "consul" {
 
 # check if consul snapshot service is running for automated backups
   GET {
-    path = "/v1/catalog/services?filter%5BServiceName%5D=consul-snapshot"
+    path = "/v1/catalog/services?filter='ServiceName==%22consul-snapshot%22'"
   }
 
 # check autopilot is configured
@@ -54,3 +54,4 @@ product "consul" {
   GET {
     path = "/v1/operator/usage?global=true"
   }
+}
