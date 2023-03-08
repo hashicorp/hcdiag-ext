@@ -32,4 +32,4 @@ Process to run hcdiag and share the results with HashiCorp:
     - Consul Enterprise: `hcdiag run -consul -config /path/to/hcdiag_consul.hcl`
 1. Submit the bundle to HashiCorp via the HashiCorp SendSafely portal link shared by your HashiCorp contact
 
-[^1]: SHA256SUM: TBC
+[^1]: SHA256SUM: a04c5fdb3e9254fc972c7ef9462531b444658b60318f19c71ed22296ac6b8c74
