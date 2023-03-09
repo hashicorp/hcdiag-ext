@@ -43,4 +43,4 @@ unzip hcdiag-ext-0.4.1.zip
     - Consul Enterprise: `hcdiag run -consul -config /path/to/hcdiag_consul.hcl`
 1. Submit the bundle to HashiCorp via the HashiCorp SendSafely portal link shared by your HashiCorp contact.
 
-[^1]: SHA256SUM: 30a90d249964987ae18f3f0106bcb13aa57b428ef34b52e65bb4922e3e2542cf
+[^1]: SHA256SUM: 618475a11cab1d2882767320d8c6cf825f3298a6ceb550f961219439c68acb7b
