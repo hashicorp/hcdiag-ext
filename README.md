@@ -26,13 +26,17 @@ apt-get install hcdiag="0.5.0-1" --yes
 
 ## Access hcdiag-ext configuration
 
-1. Download  [hcdiag-ext v0.4.1 release package](https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.1.zip) of this extended configuration [^1]
-1. Extract the `hcdiag_<tool>.hcl` file from the hcdiag-ext zip (from the above step) on the server instances running the respective product
-1. Set the necessary environment variables so hcdiag can query the product:
-    - For Vault Enterprise, the `VAULT_TOKEN` and `VAULT_ADDR` environment variables must be set
-      - An example policy for hcdiag-ext (`hcdiag_vault_policy.hcl`) is contained in this release to limit the scope hcdiag has within Vault
-    - For Terraform Enterprise, the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables must be set
-    - For Consul Enterprise, the `CONSUL_TOKEN` and `CONSUL_HTTP_ADDR` environment variables must be set
+- If sufficient access exists, download and unpack [hcdiag-ext v0.4.1 release package](https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.1.zip) of this extended configuration [^1] to the target machine(s) using
+```sh
+curl -#Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.1.zip -o hcdiag-ext-0.4.1.zip
+unzip hcdiag-ext-0.4.1.zip
+```
+- If the target instances are air gapped, run the above commands through your web proxy and then scp the relevant files to the target machines such that hcdiag has access to the correct configuration file prior to use.
+- _On the target host(s)_, export the necessary environment variables so hcdiag can query the product:
+  - For Vault Enterprise, the `VAULT_TOKEN` and `VAULT_ADDR` environment variables must be set
+    - An example policy for hcdiag-ext (`hcdiag_vault_policy.hcl`) is contained in this release to limit the scope hcdiag has within Vault
+  - For Terraform Enterprise, the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables must be set
+  - For Consul Enterprise, the `CONSUL_TOKEN` and `CONSUL_HTTP_ADDR` environment variables must be set
 
 ## Run hcdiag with the configuration
 
