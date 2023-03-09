@@ -14,6 +14,9 @@ path "sys/internal/counters/activity" {
 }
 
 # check storage autopilot redundancy zones and automated upgrades
+path "sys/storage/raft/autopilot/configuration" {
+  capabilities = ["read"]
+}
 path "sys/storage/raft/autopilot/state" {
   capabilities = ["read"]
 }
