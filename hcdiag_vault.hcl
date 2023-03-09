@@ -19,6 +19,7 @@ product "vault" {
   selects = [
               "GET /v1/sys/health",
               "GET /v1/sys/internal/counters/activity",
+              "GET /v1/sys/storage/raft/autopilot/configuration",
               "GET /v1/sys/storage/raft/autopilot/state",
               "GET /v1/sys/storage/raft/snapshot-auto/config?list=true"
             ]
@@ -34,6 +35,9 @@ product "vault" {
   }
 
 # check storage autopilot redundancy zones and automated upgrades
+  GET {
+    path = "/v1/sys/storage/raft/autopilot/configuration"
+  }
   GET {
     path = "/v1/sys/storage/raft/autopilot/state"
   }
