@@ -18,7 +18,7 @@ Process to run hcdiag and share the results with HashiCorp:
     yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
     yum install hcdiag-0.5.0-1 -y
     ```
-1. Download  [hcdiag-ext v0.4.0 release package](https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.0.zip) of this extended configuration [^1]
+1. Download  [hcdiag-ext v0.4.1 release package](https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.1.zip) of this extended configuration [^1]
 1. Extract the `hcdiag_<tool>.hcl` file from the hcdiag-ext zip (from the above step) on the server instances running the respective product
 1. Set the necessary environment variables so hcdiag can query the product:
     - For Vault Enterprise, the `VAULT_TOKEN` and `VAULT_ADDR` environment variables must be set
