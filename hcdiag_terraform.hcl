@@ -32,3 +32,4 @@ product "terraform-ent" {
     run = "replicatedctl snapshot ls --output json"
     format = "json"
   }
+}
