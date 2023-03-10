@@ -21,9 +21,9 @@ apt-get install hcdiag="0.5.0-1" --yes
 
 ## Install hcdiag-ext configuration
 
-- If sufficient access exists, download and unpack the [hcdiag-ext v0.4.1 release package](https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.1.zip)[^1] to the target instance(s):
+- If sufficient access exists, download and unpack the [hcdiag-ext v0.4.2 release package](https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.2.zip) to the target instance(s):
 ```sh
-curl -#Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.1.zip -o hcdiag-ext-0.4.1.zip
+curl -#Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.2.zip -o hcdiag-ext-0.4.2.zip
 unzip hcdiag-ext-0.4.1.zip
 ```
 
@@ -42,5 +42,3 @@ unzip hcdiag-ext-0.4.1.zip
     - Terraform Enterprise: `hcdiag run -terraform-ent -config /path/to/hcdiag_terraform.hcl`
     - Consul Enterprise: `hcdiag run -consul -config /path/to/hcdiag_consul.hcl`
 1. Submit the bundle to HashiCorp via the HashiCorp SendSafely portal link shared by your HashiCorp contact.
-
-[^1]: SHA256SUM: 62a573b5cffd76fdd1c082b69cd328cd7f0d28e09477546a02fb19235eaeb702
