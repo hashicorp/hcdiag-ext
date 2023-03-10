@@ -3,6 +3,14 @@
 
 # Terraform Enterprise checks
 
+host {
+  selects = ["true"]
+  command {
+    run = "true"
+    format = "string"
+  }
+}
+
 product "terraform-ent" {
   selects = [
               "replicatedctl license inspect",
