@@ -16,7 +16,6 @@ product "terraform-ent" {
               "replicatedctl license inspect",
               "GET /api/v2/admin/runs?page%5Bsize%5D=1",
               "GET /api/v2/admin/workspaces?page%5Bsize%5D=1",
-              "replicatedctl snapshot ls --output json",
             ]
 
 # check license and version
@@ -33,11 +32,5 @@ product "terraform-ent" {
 # check workspace count '.meta."status-counts"."total"'
   GET {
     path = "/api/v2/admin/workspaces?page%5Bsize%5D=1" 
-  }
-
-# check snapshots are configured and in use
-  command {
-    run = "replicatedctl snapshot ls --output json"
-    format = "json"
   }
 }
