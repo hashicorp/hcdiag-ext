@@ -5,27 +5,29 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
 ## Install the hcdiag binary or package
 
 - Download [hcdiag v0.5.0](https://releases.hashicorp.com/hcdiag/0.5.0/) manually and install on your PATH _or_ use a package manager:
-```sh
-# Example RHEL package install steps
-yum install -y yum-utils git jq unzip ca-certificates
-yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-yum install hcdiag-0.5.0-1 -y
 
-# Example Debian package install steps
-curl -fsSL https://apt.releases.hashicorp.com/gpg > /tmp/hashicorp.key
-apt-key add < /tmp/hashicorp.key
-apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-apt-get update --fix-missing
-apt-get install hcdiag="0.5.0-1" --yes
-```
+  ```sh
+  # Example RHEL package install steps
+  yum install -y yum-utils git jq unzip ca-certificates
+  yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  yum install hcdiag-0.5.0-1 -y
+
+  # Example Debian package install steps
+  curl -fsSL https://apt.releases.hashicorp.com/gpg > /tmp/hashicorp.key
+  apt-key add < /tmp/hashicorp.key
+  apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  apt-get update --fix-missing
+  apt-get install hcdiag="0.5.0-1" --yes
+  ```
 
 ## Install hcdiag-ext configuration
 
 - If sufficient access exists, download and unpack the [latest hcdiag-ext release package](https://github.com/hashicorp/hcdiag-ext/releases/latest) to the target instance(s):
-```sh
-curl -#Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.2.zip -o hcdiag-ext-0.4.2.zip
-unzip hcdiag-ext-0.4.2.zip
-```
+
+  ```sh
+  curl -#Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.2.zip -o hcdiag-ext-0.4.2.zip
+  unzip hcdiag-ext-0.4.2.zip
+  ```
 
 - If the target instance(s) are [air gapped](https://en.wikipedia.org/wiki/Air_gap_(networking)), run the above commands through your web proxy and then copy the relevant hcl files to the target instance(s) so hcdiag can access them prior to execution.
 - _On the target instance(s)_, export the necessary environment variables so hcdiag can query the product:
