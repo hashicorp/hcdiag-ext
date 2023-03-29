@@ -21,7 +21,7 @@ apt-get install hcdiag="0.5.0-1" --yes
 
 ## Install hcdiag-ext configuration
 
-- If sufficient access exists, download and unpack the [hcdiag-ext v0.4.2 release package](https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.2.zip) to the target instance(s):
+- If sufficient access exists, download and unpack the [latest hcdiag-ext release package](https://github.com/hashicorp/hcdiag-ext/releases/latest) to the target instance(s):
 ```sh
 curl -#Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.2.zip -o hcdiag-ext-0.4.2.zip
 unzip hcdiag-ext-0.4.2.zip
