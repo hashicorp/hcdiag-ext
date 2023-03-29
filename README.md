@@ -2,7 +2,7 @@
 
 Modified hcdiag configuration for use by HashiCorp with Customers.
 
-## Install the hcdiag binary
+## Install the hcdiag binary or package
 
 - Download [hcdiag v0.5.0](https://releases.hashicorp.com/hcdiag/0.5.0/) manually and install on your PATH _or_ use a package manager:
 ```sh
