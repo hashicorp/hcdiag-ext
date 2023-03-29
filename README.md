@@ -8,14 +8,16 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
 
   ```sh
   # Example RHEL package install steps
-  yum install -y yum-utils git jq unzip ca-certificates
+  yum install -y yum-utils unzip
   yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
   yum install hcdiag-0.5.0-1 -y
 
   # Example Debian package install steps
-  curl -fsSL https://apt.releases.hashicorp.com/gpg > /tmp/hashicorp.key
-  apt-key add < /tmp/hashicorp.key
-  apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  apt-get install -y curl gnupg unzip
+  curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor > /tmp/hashicorp.gpg
+  mv /tmp/hashicorp.gpg /etc/apt/trusted.gpg.d/
+  chmod 644 /etc/apt/trusted.gpg.d/hashicorp.gpg
+  echo "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
   apt-get update --fix-missing
   apt-get install hcdiag="0.5.0-1" --yes
   ```
