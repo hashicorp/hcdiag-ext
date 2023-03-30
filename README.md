@@ -13,13 +13,13 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
   yum install hcdiag-0.5.0-1 -y
 
   # Example Debian package install steps
-  apt-get install -y curl gnupg unzip
+  apt update && apt install --yes curl gpg unzip
   curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor > /tmp/hashicorp.gpg
-  mv /tmp/hashicorp.gpg /etc/apt/trusted.gpg.d/
-  chmod 644 /etc/apt/trusted.gpg.d/hashicorp.gpg
-  echo "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
-  apt-get update --fix-missing
-  apt-get install hcdiag="0.5.0-1" --yes
+  mv /tmp/hashicorp.gpg /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  chmod 644 /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+  apt update
+  apt install hcdiag="0.5.0-1" --yes
   ```
 
 ## Install hcdiag-ext configuration
@@ -27,7 +27,7 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
 - If sufficient access exists, download and unpack the [latest hcdiag-ext release package](https://github.com/hashicorp/hcdiag-ext/releases/latest) to the target instance(s):
 
   ```sh
-  curl -#Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.2.zip -o hcdiag-ext-0.4.2.zip
+  curl -Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.2.zip -o hcdiag-ext-0.4.2.zip
   unzip hcdiag-ext-0.4.2.zip
   ```
 
