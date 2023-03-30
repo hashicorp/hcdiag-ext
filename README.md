@@ -38,9 +38,16 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
   - For Terraform Enterprise, the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables must be set
   - For Consul Enterprise, the `CONSUL_TOKEN` and `CONSUL_HTTP_ADDR` environment variables must be set
 
+## Double check the docs
+
+- [Use hcdiag with Vault Enterprise](https://developer.hashicorp.com/vault/tutorials/monitoring/hcdiag-with-vault)
+- [Use hcdiag with Terraform Enterprise](https://developer.hashicorp.com/terraform/tutorials/enterprise/hcdiag-with-tfe)
+- [Use hcdiag with Consul Enterprise](https://developer.hashicorp.com/consul/tutorials/datacenter-operations/hcdiag-with-consul)
+- [Use hcdiag with Nomad Enterprise](https://developer.hashicorp.com/nomad/tutorials/manage-clusters/hcdiag-with-nomad)
+
 ## Run hcdiag with the hcdiag-ext configuration
 
-1. hcdiag is best run by a superuser account or the account running the respective product; current hcdiag-ext configurations do not make hcdiag attempt to run commands which require root access, but privileged access to the product API(s) is required to provide complete results.
+1. hcdiag is best run by a superuser account or the account running the respective product; most current hcdiag-ext configurations do not make hcdiag attempt to run commands which require root access, but privileged access to the product API(s) is required to provide complete results.
 1. Run hcdiag with specific configuration:
     - Vault Enterprise: `hcdiag run -vault -config /path/to/hcdiag_vault.hcl`
     - Terraform Enterprise: `hcdiag run -terraform-ent -config /path/to/hcdiag_terraform.hcl`
