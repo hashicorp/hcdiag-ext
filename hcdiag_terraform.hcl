@@ -4,10 +4,9 @@
 # Terraform Enterprise checks
 
 host {
-  selects = ["true"]
-  command {
-    run = "true"
-    format = "string"
+  selects = [":"] # noop to ensure no other default hcdiag host commands are auto-loaded
+  shell {
+    run = ":"
   }
 }
 

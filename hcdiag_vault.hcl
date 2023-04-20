@@ -4,14 +4,9 @@
 # Vault Enterprise checks
 
 host {
-  selects = ["dpkg-query -W vault-enterprise","rpm -q vault-enterprise"]
-  command {
-    run = "dpkg-query -W vault-enterprise"
-    format = "string"
-  }
-  command {
-    run = "rpm -q vault-enterprise"
-    format = "string"
+  selects = [":"] # noop to ensure no other default hcdiag host commands are auto-loaded
+  shell {
+    run = ":"
   }
 }
 

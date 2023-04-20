@@ -4,14 +4,9 @@
 # Consul Enterprise checks
 
 host {
-  selects = ["dpkg-query -W consul-enterprise","rpm -q consul-enterprise"]
-  command {
-    run = "dpkg-query -W consul-enterprise"
-    format = "string"
-  }
-  command {
-    run = "rpm -q consul-enterprise"
-    format = "string"
+  selects = [":"] # noop to ensure no other default hcdiag host commands are auto-loaded
+  shell {
+    run = ":"
   }
 }
 
