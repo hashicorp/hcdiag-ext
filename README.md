@@ -27,8 +27,8 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
 - If sufficient access exists, download and unpack the [latest hcdiag-ext release package](https://github.com/hashicorp/hcdiag-ext/releases/latest) to the target instance(s):
 
   ```sh
-  curl -Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.2.zip -o hcdiag-ext-0.4.2.zip
-  unzip hcdiag-ext-0.4.2.zip
+  curl -Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.3.zip -o hcdiag-ext-0.4.3.zip
+  unzip hcdiag-ext-0.4.3.zip
   ```
 
 - If the target instance(s) are [air gapped](https://en.wikipedia.org/wiki/Air_gap_(networking)), run the above commands through your web proxy and then copy the relevant hcl files to the target instance(s) so hcdiag can access them prior to execution.
