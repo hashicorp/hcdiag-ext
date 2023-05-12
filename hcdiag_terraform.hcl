@@ -12,15 +12,14 @@ host {
 
 product "terraform-ent" {
   selects = [
-              "replicatedctl license inspect",
+              "GET /api/v2/admin/release",
               "GET /api/v2/admin/runs?page%5Bsize%5D=1",
               "GET /api/v2/admin/workspaces?page%5Bsize%5D=1",
             ]
 
-# check license and version
-  command {
-    run = "replicatedctl license inspect"
-    format = "json"
+# check version
+  GET {
+    path = "/api/v2/admin/release"
   }
 
 # check features in use '.meta."status-counts"."policy-checked"' & '.meta."status-counts"."cost-estimated"' & '.meta."status-counts"."post-plan-completed"'
