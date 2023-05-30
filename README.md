@@ -30,8 +30,8 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
 
   ```sh
   # Example Linux steps
-  curl -Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.4.3.zip -o hcdiag-ext-0.4.3.zip
-  unzip hcdiag-ext-0.4.3.zip
+  curl -Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.5.0.zip -o hcdiag-ext-0.5.0.zip
+  unzip hcdiag-ext-0.5.0.zip
   ```
 
 - If you are running this on an instance in the product cluster and it is [air gapped](https://en.wikipedia.org/wiki/Air_gap_(networking)), run the above commands through your web proxy and then copy the relevant hcl files to the target so hcdiag can access them prior to execution.
