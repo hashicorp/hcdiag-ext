@@ -2,7 +2,7 @@
 
 Modified hcdiag configuration for use by HashiCorp with Customers.
 
-ℹ️ hcdiag-ext (with hcdiag) can now be run on a host remotely (eg laptop or desktop) as long as the host has network access to the cluster being queried. This removes the need to install anything on the cluster, significantly easing use and reducing concerns around security and change management.
+ℹ️ The hcdiag-ext configuration (with hcdiag) can now be run on a remote host (eg laptop or desktop) as long as the host has network access to the cluster being queried. When querying a Vault or Consul cluster, the remote host currently also needs a vault or consul binary to pass [an initial hcdiag startup check](https://github.com/hashicorp/hcdiag/blob/main/agent/agent.go#L443-L467). This is not necessary for Terraform and we are looking to remove this requirement for all hcdiag-ext v0.5.x "API-only" use cases. The remote execution ability removes the need to install anything on the cluster, significantly easing use and reducing concerns around security and change management.
 
 ## Install the hcdiag binary or package on your local machine or a product instance
 
@@ -13,7 +13,9 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
   yum install -y yum-utils unzip
   yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
   yum install hcdiag-0.5.0-1 -y
-
+  ```
+  
+  ```sh
   # Example Debian package install steps
   apt update && apt install --yes curl gpg unzip
   curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor > /tmp/hashicorp.gpg
@@ -22,6 +24,18 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
   echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
   apt update
   apt install hcdiag="0.5.0-1" --yes
+  ```
+
+- For hcdiag-ext remote execution with Vault or Consul: Install the vault or consul binary or package on your local machine:
+
+  ```sh
+  # Example RHEL package install steps
+  yum install vault consul -y
+  ```
+
+  ```sh
+  # Example Debian package install steps
+  apt install vault consul --yes
   ```
 
 ## Install hcdiag-ext configuration on your local machine or a product instance
