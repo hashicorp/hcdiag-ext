@@ -37,6 +37,16 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
   # Example Debian package install steps
   apt install vault consul --yes
   ```
+  
+  ```sh
+  # Example Homebrew package install steps
+  brew install vault consul
+  ```
+  
+  ```sh
+  # Example Chocolatey package install steps
+  choco install vault consul
+  ```
 
 ## Install hcdiag-ext configuration on your local machine or a product instance
 
