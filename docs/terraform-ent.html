@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>hcdiag-ext for Terraform Enterprise</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Inter|Inconsolata&display=swap" />
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+    }
+
+    h1 {
+      font-family: "Poppins", sans-serif;
+    }
+
+    pre {
+      white-space: pre-wrap;
+    }
+
+    pre,
+    code {
+      margin: 0;
+      padding: 0;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      color: #FFFFFF;
+      background-color: #844FBA;
+    }
+
+    .code-block {
+      background-color: #f6f8fa;
+      border: 1px solid #d1d5da;
+      border-radius: 3px;
+      font-size: 15px;
+    }
+
+    .code-block,
+    pre,
+    code {
+      font-family: "Inconsolata", monospace;
+    }
+  </style>
+  <script>
+    function downloadCode() {
+      const code = document.querySelector(".code-block code").innerText;
+      const blob = new Blob([code], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.setAttribute("href", url);
+      link.setAttribute("download", "hcdiag_terraform.hcl");
+      link.style.display = "none";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+    function copyCode() {
+      const code = document.querySelector(".code-block code").innerText;
+      navigator.clipboard.writeText(code)
+        .then(() => {
+          alert('Code copied to clipboard');
+        })
+        .catch((error) => {
+          console.error('Failed to copy code:', error);
+        });
+    }
+  </script>
+</head>
+
+<body>
+  <h1>hcdiag-ext for Terraform Enterprise</h1>
+  <p>For more information about how this configuration works, <a href="https://github.com/hashicorp/hcdiag-ext">see the
+      README</a>.</p>
+  <div class="code-block">
+    <pre>
+<code>
+  # Copyright (c) HashiCorp, Inc.
+  # SPDX-License-Identifier: MPL-2.0
+  
+  # Terraform Enterprise checks
+  
+  host {
+    selects = [":"] # noop to ensure no other default hcdiag host commands are auto-loaded
+    shell {
+      run = ":"
+    }
+  }
+  
+  product "terraform-ent" {
+    selects = [
+                "GET /api/v2/admin/release",
+                "GET /api/v2/admin/runs?page%5Bsize%5D=1",
+                "GET /api/v2/admin/workspaces?page%5Bsize%5D=1",
+              ]
+  
+  # check version
+    GET {
+      path = "/api/v2/admin/release"
+    }
+  
+  # check features in use '.meta."status-counts"."policy-checked"' & '.meta."status-counts"."cost-estimated"' & '.meta."status-counts"."post-plan-completed"'
+    GET {
+      path = "/api/v2/admin/runs?page%5Bsize%5D=1"
+    }
+  
+  # check workspace count '.meta."status-counts"."total"'
+    GET {
+      path = "/api/v2/admin/workspaces?page%5Bsize%5D=1" 
+    }
+  }
+</code>
+    </pre>
+  </div>
+  <button onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
+  <button onclick="copyCode()">Copy to clipboard</button>
+</body>
+
+</html>
