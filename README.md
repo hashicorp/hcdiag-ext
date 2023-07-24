@@ -50,28 +50,27 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
 
 ## Install hcdiag-ext configuration on your local machine or a product instance
 
-- Download and unpack the [latest hcdiag-ext release package](https://github.com/hashicorp/hcdiag-ext/releases/latest) on your local machine or an instance in the product cluster:
+### For Terraform Enterprise
+  
+- Access the hcdiag-ext configuration at https://hashicorp.github.io/hcdiag-ext/terraform-ent.html
+- Either download the hcl file using the download button, or if you want to paste the file contents directly into a file, copy the hcl file contents to your clipboard using the copy button
+- On your local machine or an instance in the product cluster, export the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables so hcdiag can query the product
+  - The token should be a user token for an account with administrator privileges so the admin API can be queried
 
-  ```sh
-  # Example Linux steps
-  curl -Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.5.0.zip -o hcdiag-ext-0.5.0.zip
-  unzip hcdiag-ext-0.5.0.zip
-  ```
+### For Vault Enterprise
 
-- If you are running this on an instance in the product cluster and it is [air gapped](https://en.wikipedia.org/wiki/Air_gap_(networking)), run the above commands through your web proxy and then copy the relevant hcl files to the target so hcdiag can access them prior to execution.
-- On your local machine or an instance in the product cluster, export the necessary environment variables so hcdiag can query the product:
-  - For Vault Enterprise, the `VAULT_TOKEN` and `VAULT_ADDR` environment variables must be set
-    - An example policy for hcdiag-ext (`hcdiag_vault_policy.hcl`) is contained in this release to limit the scope hcdiag has within Vault
-  - For Terraform Enterprise, the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables must be set
-    - The token should be a user token for an account with administrator privileges so the admin API can be queried
-  - For Consul Enterprise, the `CONSUL_TOKEN` and `CONSUL_HTTP_ADDR` environment variables must be set
+ℹ️ To get accurate data, you must know the Vault subscription start time in the format `YYYY-MM-DD`
+
+- Access the hcdiag-ext configuration and pass in the start time at https://hashicorp.github.io/hcdiag-ext/vault-ent.html
+- Either download the hcl file using the download button, or if you want to paste the file contents directly into a file, copy the hcl file contents to your clipboard using the copy button
+- On your local machine or an instance in the product cluster, export the `VAULT_TOKEN` and `VAULT_ADDR` environment variables so hcdiag can query the product
+  - An example policy for hcdiag-ext (`hcdiag_vault_policy.hcl`) is contained in this release to limit the scope hcdiag has within Vault
 
 ## Run hcdiag with the hcdiag-ext configuration
 
 ℹ️ Current hcdiag-ext configurations only make API requests and do not make hcdiag attempt to run any other commands. Privileged access to the product API(s) is required to provide complete results.
 
-1. Run hcdiag with specific configuration:
-    - Vault Enterprise: `hcdiag run -vault -config /path/to/hcdiag_vault.hcl`
-    - Terraform Enterprise: `hcdiag run -terraform-ent -config /path/to/hcdiag_terraform.hcl`
-    - Consul Enterprise: `hcdiag run -consul -config /path/to/hcdiag_consul.hcl`
+1. Run hcdiag with specific configuration you have downloaded in the earlier steps:
+    - Vault Enterprise: `hcdiag run -vault -config /path/to/vault-ent.hcl`
+    - Terraform Enterprise: `hcdiag run -terraform-ent -config /path/to/terraform-ent.hcl`
 1. Submit the bundle to HashiCorp via the HashiCorp SendSafely portal link shared by your HashiCorp contact.
