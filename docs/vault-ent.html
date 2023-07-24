@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>hcdiag-ext for Vault Enterprise</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Inter|Roboto+Mono&display=swap" />
@@ -26,20 +25,30 @@
     }
 
     button {
-      padding: 12px 24px;
+      padding: 0.8em 1.6em;
       font-size: 1em;
       border: none;
-      border-radius: 0.2em;
+      border-radius: 0.1em;
       cursor: pointer;
       margin-top: 1em;
       color: #000000;
       background-color: #FFEC6E;
     }
 
+    #warning {
+      margin: 2em 0;
+    }
+
+    .warning-box {
+      background-color:#ffebe6;
+      border-radius: 0.1em;
+      padding: 0.8em;
+    }
+
     .code-block {
       background-color: #f6f8fa;
       border: 1px solid #d1d5da;
-      border-radius: 0.2em;
+      border-radius: 0.1em;
       font-size: 0.75em;
     }
 
@@ -48,22 +57,40 @@
     }
   </style>
   <script>
-    var default_start_time = new Date();
-    default_start_time.setMonth(default_start_time.getMonth() - 12);
-    var default_start_time = default_start_time.toISOString();
-    var default_end_time = new Date().toISOString();
-    var queryString = window.location.search;
-    var urlParams = new URLSearchParams(queryString);
-    const start_time = urlParams.get("start_time") || default_start_time;
-    const end_time = urlParams.get("end_time") || default_end_time;
-    var times = "start_time=" + start_time + "&end_time=" + end_time;
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const startTimeParam = urlParams.get("start_time");
+    const windowEnd = new Date();
+    const windowStart = new Date();
+    windowEnd.setDate(0); // set window end to the last day of the previous full month
+    windowEnd.setHours(23, 59, 59, 999); // set window end to the last millisecond of the previous full month
+    windowStart.setDate(1); // set window start to the first day of the current month
+    windowStart.setHours(0, 0, 0, 0); // set window start to first millisecond of the day
+    windowStart.setFullYear(windowStart.getFullYear() - 3); // set window start back three years
+    const subStartDate = new Date(startTimeParam || new Date()); // sub start date is either query param start_time or current date
+    subStartDate.setDate(1); // set sub start date to the first day of the month
+    const subStartDateMinus2 = new Date(subStartDate.getFullYear() - 2, subStartDate.getMonth());
+    const subStartDateMinus1 = new Date(subStartDate.getFullYear() - 1, subStartDate.getMonth());
+    const subStartDatePlus1 = new Date(subStartDate.getFullYear() + 1, subStartDate.getMonth());
+    const subStartDatePlus2 = new Date(subStartDate.getFullYear() + 2, subStartDate.getMonth());
+    const allDates = [subStartDateMinus2, subStartDateMinus1, subStartDate, subStartDatePlus1, subStartDatePlus2];
+    const filteredDates = allDates.filter(date => date >= subStartDate && date <= windowEnd);
+    const timeQuerySelects = [];
+    for (const sDate of filteredDates) {
+      const sDatePlus1 = new Date(sDate.getFullYear() + 1, sDate.getMonth(), sDate.getDate());
+      const eDate = sDatePlus1 > windowEnd ? windowEnd : sDatePlus1;
+      const sDateISO = sDate.toISOString();
+      const eDateISO = eDate.toISOString();
+      const id = sDate.getFullYear();
+      const timeQuery = `/v1/sys/internal/counters/activity?start_time=${sDateISO}&end_time=${eDateISO}&id=${id}`;
+      timeQuerySelects.push(timeQuery);
+    }
   </script>
 </head>
-
 <body>
   <h1>hcdiag-ext for Vault Enterprise</h1>
-  <p>For more information about how this configuration works, <a href="https://github.com/hashicorp/hcdiag-ext">see the
-      README</a>.</p>
+  <p id="warning"><span class="warning-box">This page requires a querysting (eg <span class="code-block">?start_time=2021-07-15</span>) to generate the correct configuration. If no querystring is present the configuration is incorrect.</span></p>
+  <p>For more information about how this configuration works, <a href="https://github.com/hashicorp/hcdiag-ext">see the README</a>.</p>
   <div class="code-block">
     <pre>
 <code>
@@ -82,8 +109,11 @@ host {
 product "vault" {
   selects = [
               "GET /v1/sys/health",
-              "GET /v1/sys/internal/counters/activity?<script>document.write(times);</script>",
-              "GET /v1/sys/storage/raft/autopilot/configuration",
+<script>
+  for (const i of timeQuerySelects) {
+    document.write("              \"GET " + i + "\",<br>");
+  }
+</script>              "GET /v1/sys/storage/raft/autopilot/configuration",
               "GET /v1/sys/storage/raft/autopilot/state",
               "GET /v1/sys/storage/raft/snapshot-auto/config?list=true"
             ]
@@ -94,10 +124,12 @@ product "vault" {
   }
 
 # check vault usage on vault 1.6+
-  GET {
-    path = "/v1/sys/internal/counters/activity?<script>document.write(times);</script>"
-  }
-
+<script>
+  for (const i of timeQuerySelects) {
+    document.write("  GET {<br>");
+    document.write("    path = \"" + i + "\",<br>");
+    document.write("  }<br>");
+  }</script>
 # check storage autopilot redundancy zones and automated upgrades
   GET {
     path = "/v1/sys/storage/raft/autopilot/configuration"
@@ -117,16 +149,18 @@ product "vault" {
   <button onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
   <button onclick="copyCode()">Copy to clipboard</button>
   <script>
+    if (startTimeParam && startTimeParam.length > 0) {
+      const pWarning = document.getElementById('warning');
+      pWarning.style.display = 'none';
+    }
     function downloadCode() {
       const code = document.querySelector(".code-block code").innerText;
       const blob = new Blob([code], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-
       link.setAttribute("href", url);
       link.setAttribute("download", "hcdiag_vault.hcl");
       link.style.display = "none";
-
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -144,5 +178,4 @@ product "vault" {
     }
   </script>
 </body>
-
 </html>
