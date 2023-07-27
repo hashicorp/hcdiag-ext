@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>hcdiag-ext for Consul Enterprise</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Inter|Roboto+Mono&display=swap" />
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      font-size: 1em;
+    }
+
+    h1 {
+      font-family: "Poppins", sans-serif;
+    }
+
+    pre {
+      white-space: pre-wrap;
+    }
+
+    pre,
+    code {
+      margin: 0;
+      padding: 0;
+      padding-left: 1em;
+    }
+
+    button {
+      padding: 0.8em 1.6em;
+      font-size: 1em;
+      border: none;
+      border-radius: 0.1em;
+      cursor: pointer;
+      margin-top: 1em;
+      color: #FFFFFF;
+      background-color: #DC477D;
+    }
+
+    .code-block {
+      background-color: #f6f8fa;
+      border: 1px solid #d1d5da;
+      border-radius: 0.1em;
+      font-size: 0.75em;
+    }
+
+    code {
+      font-family: "Roboto Mono", monospace;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>hcdiag-ext for Consul Enterprise</h1>
+  <p>For more information about how this configuration works, <a href="https://github.com/hashicorp/hcdiag-ext">see the
+      README</a>.</p>
+  <div class="code-block">
+    <pre>
+<code>
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
+# Consul Enterprise checks
+
+host {
+  selects = [":"] # noop to ensure no other default hcdiag host commands are auto-loaded
+  shell {
+    run = ":"
+  }
+}
+
+product "consul" {
+  selects = [
+              "GET /v1/agent/self",
+              "GET /v1/catalog/services",
+              "GET /v1/catalog/services?filter='ServiceName==%22consul-snapshot%22'",
+              "GET /v1/operator/autopilot/configuration",
+              "GET /v1/operator/license",
+              "GET /v1/operator/usage?global=true"
+            ]
+
+# check consul version is recent
+  GET {
+    path = "/v1/agent/self"
+  }
+
+# get services list and count
+  GET {
+    path = "/v1/catalog/services"
+  }
+
+# check if consul snapshot service is running for automated backups
+  GET {
+    path = "/v1/catalog/services?filter='ServiceName==%22consul-snapshot%22'"
+  }
+
+# check autopilot is configured
+  GET {
+    path = "/v1/operator/autopilot/configuration"
+  }
+  
+# check consul license
+  GET {
+    path = "/v1/operator/license"
+  }
+
+# check consul usage
+  GET {
+    path = "/v1/operator/usage?global=true"
+  }
+}
+</code>
+    </pre>
+  </div>
+  <button onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
+  <button onclick="copyCode()">Copy to clipboard</button>
+  <script>
+    function downloadCode() {
+      const code = document.querySelector(".code-block code").innerText;
+      const blob = new Blob([code], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.setAttribute("href", url);
+      link.setAttribute("download", "hcdiag_consul.hcl");
+      link.style.display = "none";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+    function copyCode() {
+      const code = document.querySelector(".code-block code").innerText;
+      navigator.clipboard.writeText(code)
+        .then(() => {
+          alert('Code copied to clipboard');
+        })
+        .catch((error) => {
+          console.error('Failed to copy code:', error);
+        });
+    }
+  </script>
+</body>
+
+</html>
