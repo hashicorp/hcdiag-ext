@@ -11,6 +11,11 @@ h1 {
   font-family: "Poppins", sans-serif;
 }
 
+h2 {
+  font-family: "Poppins", sans-serif;
+  margin-top: 3em;
+}
+
 pre {
   white-space: pre-wrap;
 }

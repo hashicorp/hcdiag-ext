@@ -4,7 +4,10 @@
 <head>
   <title>hcdiag-ext for Consul Enterprise</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Inter|Roboto+Mono&display=swap" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/normalize.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/main.js"></script>
 </head>
 
 <body>
@@ -69,35 +72,8 @@ product "consul" {
 </code>
     </pre>
   </div>
-  <button class="consul" onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
-  <button class="consul" onclick="copyCode()">Copy to clipboard</button>
-  <script>
-    function downloadCode() {
-      const code = document.querySelector(".code-block code").innerText;
-      const blob = new Blob([code], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-
-      link.setAttribute("href", url);
-      link.setAttribute("download", "hcdiag_consul.hcl");
-      link.style.display = "none";
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }
-    function copyCode() {
-      const code = document.querySelector(".code-block code").innerText;
-      navigator.clipboard.writeText(code)
-        .then(() => {
-          alert('Code copied to clipboard');
-        })
-        .catch((error) => {
-          console.error('Failed to copy code:', error);
-        });
-    }
-  </script>
+  <button id="downloadCode" class="consul" onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
+  <button id="copyCode" class="consul" onclick="copyCode()">Copy to clipboard</button>
 </body>
 
 </html>
