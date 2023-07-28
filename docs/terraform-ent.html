@@ -4,49 +4,7 @@
 <head>
   <title>hcdiag-ext for Terraform Enterprise</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Inter|Roboto+Mono&display=swap" />
-  <style>
-    body {
-      font-family: "Inter", sans-serif;
-      font-size: 1em;
-    }
-
-    h1 {
-      font-family: "Poppins", sans-serif;
-    }
-
-    pre {
-      white-space: pre-wrap;
-    }
-
-    pre,
-    code {
-      margin: 0;
-      padding: 0;
-      padding-left: 1em;
-    }
-
-    button {
-      padding: 0.8em 1.6em;
-      font-size: 1em;
-      border: none;
-      border-radius: 0.1em;
-      cursor: pointer;
-      margin-top: 1em;
-      color: #FFFFFF;
-      background-color: #844FBA;
-    }
-
-    .code-block {
-      background-color: #f6f8fa;
-      border: 1px solid #d1d5da;
-      border-radius: 0.1em;
-      font-size: 0.75em;
-    }
-
-    code {
-      font-family: "Roboto Mono", monospace;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
@@ -80,12 +38,12 @@ product "terraform-ent" {
     path = "/api/v2/admin/release"
   }
 
-# check features in use '.meta."status-counts"."policy-checked"' & '.meta."status-counts"."cost-estimated"' & '.meta."status-counts"."post-plan-completed"'
+# check enterprise features in use
   GET {
     path = "/api/v2/admin/runs?page%5Bsize%5D=1"
   }
 
-# check workspace count '.meta."status-counts"."total"'
+# check workspace count
   GET {
     path = "/api/v2/admin/workspaces?page%5Bsize%5D=1" 
     }
@@ -93,8 +51,8 @@ product "terraform-ent" {
 </code>
     </pre>
   </div>
-  <button onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
-  <button onclick="copyCode()">Copy to clipboard</button>
+  <button class="terraform" onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
+  <button class="terraform" onclick="copyCode()">Copy to clipboard</button>
   <script>
     function downloadCode() {
       const code = document.querySelector(".code-block code").innerText;

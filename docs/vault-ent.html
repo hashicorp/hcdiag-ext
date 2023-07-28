@@ -1,61 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>hcdiag-ext for Vault Enterprise</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Inter|Roboto+Mono&display=swap" />
-  <style>
-    body {
-      font-family: "Inter", sans-serif;
-      font-size: 1em;
-    }
-
-    h1 {
-      font-family: "Poppins", sans-serif;
-    }
-
-    pre {
-      white-space: pre-wrap;
-    }
-
-    pre,
-    code {
-      margin: 0;
-      padding: 0;
-      padding-left: 1em;
-    }
-
-    button {
-      padding: 0.8em 1.6em;
-      font-size: 1em;
-      border: none;
-      border-radius: 0.1em;
-      cursor: pointer;
-      margin-top: 1em;
-      color: #000000;
-      background-color: #FFEC6E;
-    }
-
-    #warning {
-      margin: 2em 0;
-    }
-
-    .warning-box {
-      background-color:#ffebe6;
-      border-radius: 0.1em;
-      padding: 0.8em;
-    }
-
-    .code-block {
-      background-color: #f6f8fa;
-      border: 1px solid #d1d5da;
-      border-radius: 0.1em;
-      font-size: 0.75em;
-    }
-
-    code {
-      font-family: "Roboto Mono", monospace;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
   <script>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -69,11 +18,17 @@
     windowStart.setFullYear(windowStart.getFullYear() - 3); // set window start back three years
     const subStartDate = new Date(startTimeParam || new Date()); // sub start date is either query param start_time or current date
     subStartDate.setDate(1); // set sub start date to the first day of the month
+    const subStartDateMinus5 = new Date(subStartDate.getFullYear() - 5, subStartDate.getMonth());
+    const subStartDateMinus4 = new Date(subStartDate.getFullYear() - 4, subStartDate.getMonth());
+    const subStartDateMinus3 = new Date(subStartDate.getFullYear() - 3, subStartDate.getMonth());
     const subStartDateMinus2 = new Date(subStartDate.getFullYear() - 2, subStartDate.getMonth());
     const subStartDateMinus1 = new Date(subStartDate.getFullYear() - 1, subStartDate.getMonth());
     const subStartDatePlus1 = new Date(subStartDate.getFullYear() + 1, subStartDate.getMonth());
     const subStartDatePlus2 = new Date(subStartDate.getFullYear() + 2, subStartDate.getMonth());
-    const allDates = [subStartDateMinus2, subStartDateMinus1, subStartDate, subStartDatePlus1, subStartDatePlus2];
+    const subStartDatePlus3 = new Date(subStartDate.getFullYear() + 3, subStartDate.getMonth());
+    const subStartDatePlus4 = new Date(subStartDate.getFullYear() + 4, subStartDate.getMonth());
+    const subStartDatePlus5 = new Date(subStartDate.getFullYear() + 5, subStartDate.getMonth());
+    const allDates = [subStartDateMinus5, subStartDateMinus4, subStartDateMinus3, subStartDateMinus2, subStartDateMinus1, subStartDate, subStartDatePlus1, subStartDatePlus2, subStartDatePlus3, subStartDatePlus4, subStartDatePlus5];
     const filteredDates = allDates.filter(date => date >= subStartDate && date <= windowEnd);
     const timeQuerySelects = [];
     for (const sDate of filteredDates) {
@@ -87,10 +42,14 @@
     }
   </script>
 </head>
+
 <body>
   <h1>hcdiag-ext for Vault Enterprise</h1>
-  <p id="warning"><span class="warning-box">This page requires a querysting (eg <span class="code-block">?start_time=2021-07-15</span>) to generate the correct configuration. If no querystring is present the configuration is incorrect.</span></p>
-  <p>For more information about how this configuration works, <a href="https://github.com/hashicorp/hcdiag-ext">see the README</a>.</p>
+  <p id="warning">This page requires a <span class="code-block">start_time</span> querysting in YYYY-MM-DD format be
+    included (eg <span class="code-block"><a href="?start_time=2021-07-15">?start_time=2021-07-15</a></span>) to
+    generate the correct configuration. <em>If no querystring is present the configuration is incorrect.</em></p>
+  <p>For more information about how this configuration works, <a href="https://github.com/hashicorp/hcdiag-ext">see the
+      README</a>.</p>
   <div class="code-block">
     <pre>
 <code>
@@ -146,10 +105,10 @@ product "vault" {
 </code>
     </pre>
   </div>
-  <button onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
-  <button onclick="copyCode()">Copy to clipboard</button>
+  <button class="vault" onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
+  <button class="vault" onclick="copyCode()">Copy to clipboard</button>
   <script>
-    if (startTimeParam && startTimeParam.length > 0) {
+    if (startTimeParam && startTimeParam.length > 9) {
       const pWarning = document.getElementById('warning');
       pWarning.style.display = 'none';
     }
@@ -178,4 +137,5 @@ product "vault" {
     }
   </script>
 </body>
+
 </html>
