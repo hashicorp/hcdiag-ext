@@ -1,11 +1,11 @@
-function downloadCode() {
+function downloadCode(product) {
   const code = document.querySelector(".code-block code").innerText;
   const blob = new Blob([code], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
 
   link.setAttribute("href", url);
-  link.setAttribute("download", "hcdiag_consul.hcl");
+  link.setAttribute("download", `hcdiag_${product}.hcl`);
   link.style.display = "none";
 
   document.body.appendChild(link);
