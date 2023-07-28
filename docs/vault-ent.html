@@ -4,7 +4,9 @@
 <head>
   <title>hcdiag-ext for Vault Enterprise</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Inter|Roboto+Mono&display=swap" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/normalize.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/style.css" />
   <script>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -48,8 +50,10 @@
   <p id="warning">This page requires a <span class="code-block">start_time</span> querysting in YYYY-MM-DD format be
     included (eg <span class="code-block"><a href="?start_time=2021-07-15">?start_time=2021-07-15</a></span>) to
     generate the correct configuration. <em>If no querystring is present the configuration is incorrect.</em></p>
+  <h2>1. hcdiag-ext configuration</h2>
   <p>For more information about how this configuration works, <a href="https://github.com/hashicorp/hcdiag-ext">see the
       README</a>.</p>
+
   <div class="code-block">
     <pre>
 <code>
@@ -101,16 +105,107 @@ product "vault" {
   GET {
     path = "/v1/sys/storage/raft/snapshot-auto/config?list=true"
   }
-}
-</code>
+}</code>
     </pre>
   </div>
   <button class="vault" onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
-  <button class="vault" onclick="copyCode()">Copy to clipboard</button>
+  <button class="vault" onclick="copyCode()">Copy configuration to clipboard</button>
+  <h2>2. hcdiag-ext results parser</h2>
+  <p>Paste the contents of the results.json file from the hcdiag bundle into the below textarea and click the format
+    button.</p>
+  <div><textarea rows="10" placeholder="Paste the contents of the results.json file here..." id="jsonInput"></textarea>
+  </div>
+  <button class="vault" onclick="formatJSON()">Format results</button>
+  <div id="resultOutput">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 50%;">Check</th>
+          <th style="width: 50%;">Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Vault Enterprise Version</th>
+          <td id="vaultEnterpriseVersionResult"></td>
+        </tr>
+        <tr>
+          <th>Vault Enterprise License Expiry Date</th>
+          <td id="licenseExpiryDateResultHuman"></td>
+        </tr>
+        <tr>
+          <th>Vault Enterprise Consumption (clients)</th>
+          <td id="vaultEnterpriseUsageClients"></td>
+        </tr>
+        <tr>
+          <th>Disaster Recovery Replication Configured</th>
+          <td id="disasterRecoveryReplicationConfigured"></td>
+        </tr>
+        <tr>
+          <th>Named Snapshots Configured</th>
+          <td id="namedSnapshotsConfigured"></td>
+        </tr>
+        <tr>
+          <th>Redundancy Zones Configured</th>
+          <td id="redundancyZonesConfigured"></td>
+        </tr>
+        <tr>
+          <th>Storage Autopilot Upgrades Enabled</th>
+          <td id="storageAutopilotUpgrades"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <h2>3. Copy results for email</h2>
+  <p>Once the table above is populated with parsed results, click the button to copy them to your clipboard to easily
+    send them to your HashiCorp contact via email.</p>
+  <button class="vault" onclick="copyTable()">Copy table to clipboard</button>
   <script>
     if (startTimeParam && startTimeParam.length > 9) {
       const pWarning = document.getElementById('warning');
       pWarning.style.display = 'none';
+    }
+    function formatJSON() {
+      const jsonInput = document.getElementById("jsonInput").value;
+      const resultOutput = document.getElementById("resultOutput");
+      try {
+        const data = JSON.parse(jsonInput);
+        const vaultEnterpriseVersionResult = String(deepGet(data, "vault.GET /v1/sys/health.result.response.version"));
+        const licenseExpiryDateResult = String(deepGet(data, "vault.GET /v1/sys/health.result.response.license.expiry_time"));
+        const vaultEnterpriseUsageClients = String(deepGet(data, "vault.GET /v1/sys/internal/counters/activity.result.response.data.total.clients"));
+        const vaultEnterpriseUsageResults = String(deepGet(data, "vault.GET /v1/sys/internal/counters/activity.result.response.data.total"));
+        const disasterRecoveryReplicationConfiguration = String(deepGet(data, "vault.GET /v1/sys/health.result.response.replication_dr_mode"));
+        const namedSnapshotsConfiguration = String(deepGet(data, "vault.GET /v1/sys/storage/raft/snapshot-auto/config?list=true.result.response.data.keys"));
+        const redundancyZonesConfiguration = String(deepGet(data, "vault.GET /v1/sys/storage/raft/autopilot/state.result.response.data.redundancy_zones"));
+        const storageAutopilotUpgrades = String(deepGet(data, "vault.GET /v1/sys/storage/raft/autopilot/configuration.result.response.data.disable_upgrade_migration")).replace("false", "Yes").replace("true", "No");
+        // Convert the license expiry date to a human readable format
+        const licenseExpiryDateResultHuman = (licenseExpiryDateResult === "Unknown") ? "Unknown" : new Date(licenseExpiryDateResult).toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' });
+        // Determine some Yes/No answers based on the results
+        const disasterRecoveryReplicationConfigured = (disasterRecoveryReplicationConfiguration === "disabled" || disasterRecoveryReplicationConfiguration === "unknown") ? "No" : "Yes";
+        const namedSnapshotsConfigured = (namedSnapshotsConfiguration.length > 7) ? "Yes" : "No";
+        const redundancyZonesConfigured = (redundancyZonesConfiguration.length > 7) ? "Yes" : "No";
+        // Update the results table
+        document.getElementById("vaultEnterpriseVersionResult").innerHTML = vaultEnterpriseVersionResult;
+        document.getElementById("licenseExpiryDateResultHuman").innerHTML = licenseExpiryDateResultHuman;
+        document.getElementById("vaultEnterpriseUsageClients").innerHTML = `${vaultEnterpriseUsageClients} <span class="raw-result">${vaultEnterpriseUsageResults}</span>`;
+        document.getElementById("disasterRecoveryReplicationConfigured").innerHTML = `${disasterRecoveryReplicationConfigured} <span class="raw-result">${disasterRecoveryReplicationConfiguration}</span>`;
+        document.getElementById("namedSnapshotsConfigured").innerHTML = `${namedSnapshotsConfigured} <span class="raw-result">${namedSnapshotsConfiguration}</span>`;
+        document.getElementById("redundancyZonesConfigured").innerHTML = `${redundancyZonesConfigured} <span class="raw-result">${redundancyZonesConfiguration}</span>`;
+        document.getElementById("storageAutopilotUpgrades").innerHTML = storageAutopilotUpgrades;
+      } catch (error) {
+        resultOutput.innerHTML = `<p id="warning">Invalid JSON: ${error.message}`;
+      }
+    }
+    function deepGet(dictionary, keys, defaultVal = "Unknown") {
+      const keysList = keys.split(".");
+      for (const key of keysList) {
+        if (typeof dictionary === "object" && dictionary !== null && key in dictionary) {
+          dictionary = dictionary[key];
+        } else {
+          return defaultVal;
+        }
+      }
+      return dictionary;
     }
     function downloadCode() {
       const code = document.querySelector(".code-block code").innerText;
@@ -133,6 +228,16 @@ product "vault" {
         })
         .catch((error) => {
           console.error('Failed to copy code:', error);
+        });
+    }
+    function copyTable() {
+      const table = document.querySelector("#resultOutput").innerText;
+      navigator.clipboard.writeText(table)
+        .then(() => {
+          alert('Table contents copied to clipboard');
+        })
+        .catch((error) => {
+          console.error('Failed to copy table contents:', error);
         });
     }
   </script>

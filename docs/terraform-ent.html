@@ -4,13 +4,17 @@
 <head>
   <title>hcdiag-ext for Terraform Enterprise</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Inter|Roboto+Mono&display=swap" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/normalize.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
   <h1>hcdiag-ext for Terraform Enterprise</h1>
+  <h2>1. hcdiag-ext configuration</h2>
   <p>For more information about how this configuration works, <a href="https://github.com/hashicorp/hcdiag-ext">see the
       README</a>.</p>
+
   <div class="code-block">
     <pre>
 <code>
@@ -47,23 +51,101 @@ product "terraform-ent" {
   GET {
     path = "/api/v2/admin/workspaces?page%5Bsize%5D=1" 
     }
-  }
-</code>
+  }</code>
     </pre>
   </div>
   <button class="terraform" onclick="downloadCode()">Download hcdiag-ext configuration file</button> or
   <button class="terraform" onclick="copyCode()">Copy to clipboard</button>
+  <h2>2. hcdiag-ext results parser</h2>
+  <p>Paste the contents of the results.json file from the hcdiag bundle into the below textarea and click the format
+    button.</p>
+  <div><textarea rows="10" placeholder="Paste the contents of the results.json file here..." id="jsonInput"></textarea>
+  </div>
+  <button class="terraform" onclick="formatJSON()">Format results</button>
+  <div id="resultOutput">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 50%;">Check</th>
+          <th style="width: 50%;">Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Terraform Enterprise Version</th>
+          <td id="tfeVersion"></td>
+        </tr>
+        <tr>
+          <th>Terraform Enterprise License Expired</th>
+          <td id="licenseExpiredResult"></td>
+        </tr>
+        <tr>
+          <th>Terraform Enterprise Consumption (workspaces)</th>
+          <td id="workspaceCountResult"></td>
+        </tr>
+        <tr>
+          <th>Sentinel Policy Operations</th>
+          <td id="sentinelChecksCompletedResult"></td>
+        </tr>
+        <tr>
+          <th>Cost Estimation Calculations</th>
+          <td id="costEstimationsCompletedResult"></td>
+        </tr>
+        <tr>
+          <th>Run Task Operations</th>
+          <td id="runTasksTotal"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <h2>3. Copy results for email</h2>
+  <p>Once the table above is populated with parsed results, click the button to copy them to your clipboard to easily
+    send them to your HashiCorp contact via email.</p>
+  <button class="terraform" onclick="copyTable()">Copy table to clipboard</button>
   <script>
+    function formatJSON() {
+      const jsonInput = document.getElementById("jsonInput").value;
+      const resultOutput = document.getElementById("resultOutput");
+      try {
+        const data = JSON.parse(jsonInput);
+        const tfeVersion = String(deepGet(data, "terraform-ent.GET /api/v2/admin/release.result.response.release"));
+        const licenseExpiredResult = String(deepGet(data, "terraform-ent.replicatedctl license inspect.result.json[0].IsExpired")).replace("False", "No").replace("True", "Yes");
+        const workspaceCountResult = String(deepGet(data, "terraform-ent.GET /api/v2/admin/workspaces?page%5Bsize%5D=1.result.response.meta.status-counts.total"));
+        const sentinelChecksCompletedResult = String(deepGet(data, "terraform-ent.GET /api/v2/admin/runs?page%5Bsize%5D=1.result.response.meta.status-counts.policy-checked"));
+        const costEstimationsCompletedResult = String(deepGet(data, "terraform-ent.GET /api/v2/admin/runs?page%5Bsize%5D=1.result.response.meta.status-counts.cost-estimated"));
+        const runTasksPreApplyCompleted = deepGet(data, "terraform-ent.GET /api/v2/admin/runs?page%5Bsize%5D=1.result.response.meta.status-counts.pre-apply-completed");
+        const runTasksPostPlanCompleted = deepGet(data, "terraform-ent.GET /api/v2/admin/runs?page%5Bsize%5D=1.result.response.meta.status-counts.post-plan-completed");
+        const runTasksTotal = runTasksPreApplyCompleted + runTasksPostPlanCompleted;
+        // Update the results table
+        document.getElementById("tfeVersion").innerHTML = tfeVersion;
+        document.getElementById("licenseExpiredResult").innerHTML = licenseExpiredResult;
+        document.getElementById("workspaceCountResult").innerHTML = workspaceCountResult;
+        document.getElementById("sentinelChecksCompletedResult").innerHTML = sentinelChecksCompletedResult;
+        document.getElementById("costEstimationsCompletedResult").innerHTML = costEstimationsCompletedResult;
+        document.getElementById("runTasksTotal").innerHTML = runTasksTotal;
+      } catch (error) {
+        resultOutput.innerHTML = `<p id="warning">Invalid JSON: ${error.message}`;
+      }
+    }
+    function deepGet(dictionary, keys, defaultVal = "Unknown") {
+      const keysList = keys.split(".");
+      for (const key of keysList) {
+        if (typeof dictionary === "object" && dictionary !== null && key in dictionary) {
+          dictionary = dictionary[key];
+        } else {
+          return defaultVal;
+        }
+      }
+      return dictionary;
+    }
     function downloadCode() {
       const code = document.querySelector(".code-block code").innerText;
       const blob = new Blob([code], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-
       link.setAttribute("href", url);
       link.setAttribute("download", "hcdiag_terraform.hcl");
       link.style.display = "none";
-
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -77,6 +159,16 @@ product "terraform-ent" {
         })
         .catch((error) => {
           console.error('Failed to copy code:', error);
+        });
+    }
+    function copyTable() {
+      const table = document.querySelector("#resultOutput").innerText;
+      navigator.clipboard.writeText(table)
+        .then(() => {
+          alert('Table contents copied to clipboard');
+        })
+        .catch((error) => {
+          console.error('Failed to copy table contents:', error);
         });
     }
   </script>
