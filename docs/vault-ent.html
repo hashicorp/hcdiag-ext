@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="js/main.js"></script>
-<script>
+  <script>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const startTimeParam = urlParams.get("start_time");
@@ -49,21 +49,28 @@
 
 <body>
   <h1>hcdiag-ext for Vault Enterprise</h1>
-  <p id="warning">This page requires a <span class="code-block">start_time</span> querysting in YYYY-MM-DD format be
-    included (eg <span class="code-block"><a href="?start_time=2021-07-15">?start_time=2021-07-15</a></span>) to
-    generate the correct configuration. <em>If no querystring is present the configuration is incorrect.</em></p>
   <h2>1. hcdiag-ext configuration</h2>
-  <p>Download the hcl configuration using the download button, or if you want to paste the file contents directly into a
-    file, copy the hcl file contents to your clipboard using the copy button.</p>
-  <p>On your local machine or an instance in the product cluster, export the <span class="code-block">VAULT_TOKEN</span>
-    and <span class="code-block">VAULT_ADDR</span> environment variables so hcdiag can query the product.</p>
-  <p>An example Vault policy scoped for hcdiag-ext (<a href="hcdiag_vault_policy.hcl">hcdiag_vault_policy.hcl</a>) is
-    contained in this release to limit the access hcdiag has within Vault.</p>
-  <p>For more information about how this configuration works, <a href="https://github.com/hashicorp/hcdiag-ext">see the
-      README</a>.</p>
-
-  <div class="code-block">
-    <pre>
+  <div id="warning">This page requires a valid <span class="code-block">start_time</span> querysting parameter in
+    YYYY-MM-DD format be included (eg <span class="code-block"><a
+        href="?start_time=2021-07-15">?start_time=2021-07-15</a></span>) to generate the correct configuration. <em>If
+      no querystring is present the configuration is incorrect.</em>
+  </div>
+  <div id="configuration">
+    <p>Download the hcl configuration using the download button, or if you want to paste the file contents directly into
+      a file, copy the hcl file contents to your clipboard using the copy button.</p>
+    <p>On your local machine or an instance in the product cluster, export the <span
+        class="code-block">VAULT_TOKEN</span> and <span class="code-block">VAULT_ADDR</span> environment variables so
+      hcdiag can query the product.</p>
+    <p>When querying a Vault cluster remotely, the remote host currently needs the vault binary to pass an initial
+      hcdiag startup check. We are looking to remove this requirement for all hcdiag-ext v0.5.x "API-only" use cases.
+      The remote execution ability removes the need to install anything on the cluster, significantly easing use and
+      reducing concerns around security and change management.</p>
+    <p>An example Vault policy scoped for hcdiag-ext (<a href="hcdiag_vault_policy.hcl">hcdiag_vault_policy.hcl</a>) is
+      contained in this release to limit the access hcdiag has within Vault.</p>
+    <p>For more information about how this configuration works, <a href="https://github.com/hashicorp/hcdiag-ext">see
+        the README</a>.</p>
+    <div class="code-block">
+      <pre>
 <code>
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
@@ -114,10 +121,11 @@ product "vault" {
     path = "/v1/sys/storage/raft/snapshot-auto/config?list=true"
   }
 }</code>
-    </pre>
+      </pre>
+    </div>
+    <button id="downloadCode" class="vault" onclick="downloadCode('vault')">Download hcdiag-ext configuration file</button> or
+    <button id="copyCode" class="vault" onclick="copyCode()">Copy configuration to clipboard</button>
   </div>
-  <button id="downloadCode" class="vault" onclick="downloadCode('vault')">Download hcdiag-ext configuration file</button> or
-  <button id="copyCode" class="vault" onclick="copyCode()">Copy configuration to clipboard</button>
   <h2>2. hcdiag-ext results parser</h2>
   <p>Paste the contents of the results.json file from the hcdiag bundle into the below textarea and click the format
     button.</p>
@@ -170,9 +178,14 @@ product "vault" {
     send them to your HashiCorp contact via email.</p>
   <button id="copyResult" class="vault" onclick="copyTable()">Copy table to clipboard</button>
   <script>
-    if (startTimeParam && startTimeParam.length > 9) {
-      const pWarning = document.getElementById('warning');
+    const pWarning = document.getElementById('warning');
+    const pConfiguration = document.getElementById('configuration');
+    if (!validDate(startTimeParam)) {
+      pWarning.style.display = 'block';
+      pConfiguration.style.display = 'none';
+    } else {
       pWarning.style.display = 'none';
+      pConfiguration.style.display = 'block';
     }
     function formatJSON() {
       const jsonInput = document.getElementById("jsonInput").value;

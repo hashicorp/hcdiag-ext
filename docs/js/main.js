@@ -1,3 +1,19 @@
+function validDate(dateString) {
+  // Regex to match YYYY-MM-DD 
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(dateString)) {
+    return false; 
+  }
+  // Check if valid date with moment
+  if (!moment(dateString).isValid()) {
+    return false;
+  }
+  // Check if date is in the future
+  if (moment(dateString).isAfter(moment())) {
+    return false;
+  }
+  return true;
+}
 function downloadCode(product) {
   const code = document.querySelector(".code-block code").innerText;
   const blob = new Blob([code], { type: "text/plain" });
@@ -55,4 +71,16 @@ function deepGet(dictionary, keys, defaultVal = "Unknown") {
     }
   }
   return dictionary;
+}
+function getValueByPath(obj, keyPath, defaultValue) {
+  if (typeof obj !== "object" || obj === null) {
+    throw new Error("obj must be an object");
+  }
+  if (typeof keyPath !== "string") {
+    throw new Error("keyPath must be a string");
+  }
+  const keys = keyPath.split(".");
+  return keys.reduce((value, key) => {
+    return value?.[key] ?? defaultValue;
+  }, obj);
 }
