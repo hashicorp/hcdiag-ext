@@ -7,42 +7,43 @@
   <link rel="stylesheet" href="css/normalize.css" />
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="js/main.js"></script>
-  <script>
+<script>
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const startTimeParam = urlParams.get("start_time");
-    const windowEnd = new Date();
-    const windowStart = new Date();
-    windowEnd.setDate(0); // set window end to the last day of the previous full month
-    windowEnd.setHours(23, 59, 59, 999); // set window end to the last millisecond of the previous full month
-    windowStart.setDate(1); // set window start to the first day of the current month
-    windowStart.setHours(0, 0, 0, 0); // set window start to first millisecond of the day
-    windowStart.setFullYear(windowStart.getFullYear() - 3); // set window start back three years
-    const subStartDate = new Date(startTimeParam || new Date()); // sub start date is either query param start_time or current date
-    subStartDate.setDate(1); // set sub start date to the first day of the month
-    const subStartDateMinus5 = new Date(subStartDate.getFullYear() - 5, subStartDate.getMonth());
-    const subStartDateMinus4 = new Date(subStartDate.getFullYear() - 4, subStartDate.getMonth());
-    const subStartDateMinus3 = new Date(subStartDate.getFullYear() - 3, subStartDate.getMonth());
-    const subStartDateMinus2 = new Date(subStartDate.getFullYear() - 2, subStartDate.getMonth());
-    const subStartDateMinus1 = new Date(subStartDate.getFullYear() - 1, subStartDate.getMonth());
-    const subStartDatePlus1 = new Date(subStartDate.getFullYear() + 1, subStartDate.getMonth());
-    const subStartDatePlus2 = new Date(subStartDate.getFullYear() + 2, subStartDate.getMonth());
-    const subStartDatePlus3 = new Date(subStartDate.getFullYear() + 3, subStartDate.getMonth());
-    const subStartDatePlus4 = new Date(subStartDate.getFullYear() + 4, subStartDate.getMonth());
-    const subStartDatePlus5 = new Date(subStartDate.getFullYear() + 5, subStartDate.getMonth());
-    const allDates = [subStartDateMinus5, subStartDateMinus4, subStartDateMinus3, subStartDateMinus2, subStartDateMinus1, subStartDate, subStartDatePlus1, subStartDatePlus2, subStartDatePlus3, subStartDatePlus4, subStartDatePlus5];
-    const filteredDates = allDates.filter(date => date >= subStartDate && date <= windowEnd);
+    const startTime = moment(startTimeParam).utc();
+    const nowTime = moment().utc();
+    const subWindowYears = nowTime.diff(startTime, 'years');
     const timeQuerySelects = [];
-    for (const sDate of filteredDates) {
-      const sDatePlus1 = new Date(sDate.getFullYear() + 1, sDate.getMonth(), sDate.getDate());
-      const eDate = sDatePlus1 > windowEnd ? windowEnd : sDatePlus1;
-      const sDateISO = sDate.toISOString();
-      const eDateISO = eDate.toISOString();
-      const id = sDate.getFullYear();
-      const timeQuery = `/v1/sys/internal/counters/activity?start_time=${sDateISO}&end_time=${eDateISO}&id=${id}`;
-      timeQuerySelects.push(timeQuery);
+    for (let i = 0; i < subWindowYears; i++) {
+      const startOfSubYear = startTime.clone()
+        .startOf('month')
+        .milliseconds(0)
+      const endOfSubYear = startTime.clone()
+        .add(1, 'year')
+        .subtract(1, 'month')
+        .endOf('month')
+        .milliseconds(999)
+      const startOfTimeWindow = startOfSubYear.add(i, 'years').format();
+      const endOfTimeWindow = endOfSubYear.add(i, 'years').format();
+      const yearQuery = `/v1/sys/internal/counters/activity?start_time=${startOfTimeWindow}&end_time=${endOfTimeWindow}`;
+      timeQuerySelects.push(yearQuery);
     }
+    const startOfFinalWindow = startTime.clone()
+      .startOf('month')
+      .milliseconds(0)
+      .year(nowTime.get('year'))
+      .format();
+    const endOfFinalWindow = nowTime.clone()
+      .subtract(1, 'month')
+      .endOf('month')
+      .milliseconds(999)
+      .format();
+    const finalQuery = `/v1/sys/internal/counters/activity?start_time=${startOfFinalWindow}&end_time=${endOfFinalWindow}`;
+    timeQuerySelects.push(finalQuery);
+    //console.log(timeQuerySelects);
   </script>
 </head>
 
