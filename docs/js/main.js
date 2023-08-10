@@ -72,15 +72,34 @@ function deepGet(dictionary, keys, defaultVal = "Unknown") {
   }
   return dictionary;
 }
-function getValueByPath(obj, keyPath, defaultValue) {
-  if (typeof obj !== "object" || obj === null) {
-    throw new Error("obj must be an object");
+function findKey(dictionary, value) {
+  const matches = [];
+  for (let key in dictionary["vault"]) {
+    const [base, query] = key.split('?');
+    if (base === value) {
+      matches.push("vault." + key + ".result.response.data.total.clients");
+    }
   }
-  if (typeof keyPath !== "string") {
-    throw new Error("keyPath must be a string");
+  return matches;
+}
+function formatUsage(data, baseKey = "GET /v1/sys/internal/counters/activity") {
+  const keys = findKey(data, baseKey);
+  let results = `<table class="count-results">`;
+  for (const key of keys) {
+    const query = key.split("?")[1];
+    const start = query.split("&")[0];
+    const startDate = start.split("T")[0];
+    const end = query.split("&")[1];
+    const endDate = end.split("T")[0];
+    const count = deepGet(data, key);
+    results += `
+      <tr>
+        <td>${startDate}</td>
+        <td>${endDate}</td>
+        <td>${count}</td>
+      </tr>
+    `;
   }
-  const keys = keyPath.split(".");
-  return keys.reduce((value, key) => {
-    return value?.[key] ?? defaultValue;
-  }, obj);
+  results += "</table>";
+  return results;
 }

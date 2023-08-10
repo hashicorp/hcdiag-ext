@@ -123,3 +123,12 @@ tbody th {
 .raw-result {
   color: #aaa;
 }
+
+table.count-results {
+  margin: 0;
+}
+
+table.count-results td {
+  border: none;
+  padding: 0;
+}
