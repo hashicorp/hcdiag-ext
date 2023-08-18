@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Results Parser for Vault Enterprise</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Roboto+Mono&display=swap" />
+  <link rel="stylesheet" href="css/normalize.min.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/main.js"></script>
+</head>
+
+<body>
+  <h1>Results Parser for Vault Enterprise</h1>
+  <div id="dropZone" class="vault">Drag results.json here to format results</div>
+  <div id="errorOutput"></div>
+  <div id="resultOutput">
+    <table>
+      <thead>
+        <tr>
+          <th>Check</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Vault Enterprise Version</th>
+          <td id="vaultEnterpriseVersionResult"></td>
+        </tr>
+        <tr>
+          <th>Vault Enterprise License Expiry Date</th>
+          <td id="licenseExpiryDateResultHuman"></td>
+        </tr>
+        <tr>
+          <th>Vault Enterprise Consumption (clients)</th>
+          <td id="vaultEnterpriseUsageClients"></td>
+        </tr>
+        <tr>
+          <th>Disaster Recovery Replication Configured <a href="https://developer.hashicorp.com/vault/docs/enterprise/replication">&nearrow;</a></th>
+          <td id="disasterRecoveryReplicationConfigured"></td>
+        </tr>
+        <tr>
+          <th>Named Snapshots Configured <a href="https://developer.hashicorp.com/vault/docs/enterprise/automated-integrated-storage-snapshots">&nearrow;</a></th>
+          <td id="namedSnapshotsConfigured"></td>
+        </tr>
+        <tr>
+          <th>Redundancy Zones Configured <a href="https://developer.hashicorp.com/vault/docs/enterprise/redundancy-zones">&nearrow;</a></th>
+          <td id="redundancyZonesConfigured"></td>
+        </tr>
+        <tr>
+          <th>Storage Autopilot Upgrades Enabled <a href="https://developer.hashicorp.com/vault/docs/enterprise/automated-upgrades">&nearrow;</a></th>
+          <td id="storageAutopilotUpgrades"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script>
+    const dropZone = document.getElementById("dropZone");
+    dropZone.addEventListener("dragover", function (event) {
+      // Prevent default behavior
+      event.preventDefault();
+    });
+    dropZone.addEventListener("drop", function (event) {
+      // Get file from drag data
+      const file = event.dataTransfer.files[0];
+      // Read file
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = function () {
+        // Parse JSON 
+        const json = JSON.parse(reader.result);
+        // Process JSON data
+        formatVaultJSON(json);
+      }
+      event.preventDefault();
+    });
+  </script>
+
+</body>
+
+</html>

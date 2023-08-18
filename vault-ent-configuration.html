@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Configuration Generator for Vault Enterprise</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Roboto+Mono&display=swap" />
+  <link rel="stylesheet" href="css/normalize.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/moment.min.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const startTimeParam = urlParams.get("start_time");
+    const startTime = moment(startTimeParam).utc();
+    const nowTime = moment().utc();
+    const subWindowYears = nowTime.diff(startTime, 'years');
+    const timeQuerySelects = [];
+    for (let i = 0; i < subWindowYears; i++) {
+      const startOfSubYear = startTime.clone()
+        .startOf('month')
+        .milliseconds(0)
+      const endOfSubYear = startTime.clone()
+        .add(1, 'year')
+        .subtract(1, 'month')
+        .endOf('month')
+        .milliseconds(999)
+      const startOfTimeWindow = startOfSubYear.add(i, 'years').format();
+      const endOfTimeWindow = endOfSubYear.add(i, 'years').format();
+      const yearQuery = `/v1/sys/internal/counters/activity?start_time=${startOfTimeWindow}&end_time=${endOfTimeWindow}`;
+      timeQuerySelects.push(yearQuery);
+    }
+    const startOfFinalWindow = startTime.clone()
+      .startOf('month')
+      .milliseconds(0)
+      .year(nowTime.get('year'))
+      .format();
+    const endOfFinalWindow = nowTime.clone()
+      .subtract(1, 'month')
+      .endOf('month')
+      .milliseconds(999)
+      .format();
+    const finalQuery = `/v1/sys/internal/counters/activity?start_time=${startOfFinalWindow}&end_time=${endOfFinalWindow}`;
+    timeQuerySelects.push(finalQuery);
+    //console.log(timeQuerySelects);
+  </script>
+</head>
+
+<body>
+  <h1>Configuration Generator for Vault Enterprise</h1>
+  <div id="warning">This page requires a valid <span class="code-block">start_time</span> querysting parameter in
+    YYYY-MM-DD format be included (eg <span class="code-block"><a
+        href="?start_time=2021-07-15">?start_time=2021-07-15</a></span>) to generate the correct configuration. <em>If
+      no querystring is present the configuration is incorrect.</em>
+  </div>
+  <div id="configuration">
+    <p>Download the hcl configuration using the download button, or if you want to paste the file contents directly into
+      a file, copy the hcl file contents to your clipboard using the copy button.</p>
+    <p>On your local machine or an instance in the product cluster, export the <span
+        class="code-block">VAULT_TOKEN</span> and <span class="code-block">VAULT_ADDR</span> environment variables so
+      hcdiag can query the product.</p>
+    <p>When querying a Vault cluster remotely, the remote host currently needs the vault binary to pass an initial
+      hcdiag startup check. We are looking to remove this requirement for all hcdiag-ext v0.5.x "API-only" use cases.
+      The remote execution ability removes the need to install anything on the cluster, significantly easing use and
+      reducing concerns around security and change management.</p>
+    <p>An example Vault policy scoped for hcdiag-ext (<a href="hcdiag_vault_policy.hcl">hcdiag_vault_policy.hcl</a>) is
+      contained in this release to limit the access hcdiag has within Vault.</p>
+      <p>For more information about how to configure hcdiag-ext, <a href="https://github.com/hashicorp/hcdiag-ext">see the README</a>.</p>
+    <div class="code-block">
+      <pre>
+<code>
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
+# Vault Enterprise checks
+  
+host {
+  selects = [":"] # noop to ensure no other default hcdiag host commands are auto-loaded
+  shell {
+    run = ":"
+  }
+}
+
+product "vault" {
+  selects = [
+              "GET /v1/sys/health",
+<script>
+  for (const i of timeQuerySelects) {
+    document.write("              \"GET " + i + "\",<br>");
+  }
+</script>              "GET /v1/sys/storage/raft/autopilot/configuration",
+              "GET /v1/sys/storage/raft/autopilot/state",
+              "GET /v1/sys/storage/raft/snapshot-auto/config?list=true"
+            ]
+
+# check health endpoint for version, license.expiry_time, replication_dr_mode
+  GET {
+    path = "/v1/sys/health"
+  }
+
+# check vault usage on vault 1.6+
+<script>
+  for (const i of timeQuerySelects) {
+    document.write("  GET {<br>");
+    document.write("    path = \"" + i + "\"<br>");
+    document.write("  }<br>");
+  }</script>
+# check storage autopilot redundancy zones and automated upgrades
+  GET {
+    path = "/v1/sys/storage/raft/autopilot/configuration"
+  }
+  GET {
+    path = "/v1/sys/storage/raft/autopilot/state"
+  }
+
+# check if snapshots are configured
+  GET {
+    path = "/v1/sys/storage/raft/snapshot-auto/config?list=true"
+  }
+}</code>
+      </pre>
+    </div>
+    <button id="downloadCode" class="vault" onclick="downloadCode('vault')">Download hcdiag-ext configuration file</button> or
+    <button id="copyCode" class="vault" onclick="copyCode()">Copy configuration to clipboard</button>
+</body>
+<script>
+  const pWarning = document.getElementById('warning');
+  const pConfiguration = document.getElementById('configuration');
+  if (!validDate(startTimeParam)) {
+    pWarning.style.display = 'block';
+    pConfiguration.style.display = 'none';
+  } else {
+    pWarning.style.display = 'none';
+    pConfiguration.style.display = 'block';
+  }
+</script>
+
+</html>
