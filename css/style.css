@@ -1,0 +1,188 @@
+body {
+  font-family: -apple-system, "system-ui", "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 1em;
+  color: #343536;
+  width: 1024px;
+  margin: 0 auto;
+  padding: 1em;
+  padding-bottom: 5em;
+}
+
+h1 {
+  font-family: "Poppins", sans-serif;
+}
+
+h2 {
+  font-family: "Poppins", sans-serif;
+  margin-top: 3em;
+}
+
+p {
+  line-height: 1.4;
+}
+
+em {
+  font-style: italic;
+  border-bottom: 1px solid;
+}
+
+pre {
+  white-space: pre-wrap;
+}
+
+pre,
+code {
+  margin: 0;
+  padding: 0 1em;
+}
+
+button {
+  padding: 0.8em 1.6em;
+  font-size: 1em;
+  border: none;
+  border-radius: 0.2em;
+  cursor: pointer;
+  margin-top: 1em;
+}
+
+code {
+  font-family: "Roboto Mono", monospace;
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: "Roboto Mono", monospace;
+  font-size: 0.75em;
+  border: 1px solid #d1d5da;
+  border-radius: 0.2em;
+  resize: vertical;
+  margin: 0;
+  padding: 1em;
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 1em;
+  width: 100%;
+}
+
+th,
+td {
+  padding: 0.5em;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #cdcdcd;
+
+}
+
+thead th {
+  background-color: #fff;
+  color: #222;
+  border-bottom: 2px solid #000;
+  font-weight: bolder;
+  width: 50%;
+}
+
+tbody th {
+  background-color: #f3f3f3;
+  border-right: 1px solid #cdcdcd;
+}
+
+table.count-results {
+  margin: 0;
+}
+
+table.count-results td {
+  border: none;
+  padding: 0;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.8em 1.6em;
+  font-size: 1em;
+  text-decoration: none;
+  border: none;
+  border-radius: 0.2em;
+  cursor: pointer;
+}
+
+.terraform {
+  color: #ffffff;
+  background-color: #844FBA;
+}
+
+.vault {
+  color: #000000;
+  background-color: #ffec6e;
+}
+
+.consul {
+  color: #ffffff;
+  background-color: #dc477d;
+}
+
+#warning {
+  background-color: #ffebe6;
+  border-radius: 0.2em;
+  margin: 1em 0;
+  padding: 0.8em;
+}
+
+.code-block {
+  background-color: #f6f8fa;
+  border: 1px solid #d1d5da;
+  border-radius: 0.2em;
+  font-size: 0.75em;
+}
+
+.code-block a {
+  text-decoration: none;
+}
+
+.raw-result {
+  color: #aaa;
+}
+
+#dropZone {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  box-sizing: border-box;
+  font-family: "Roboto Mono", monospace;
+  font-size: 0.75em;
+  font-weight: 600;
+  color: rgb(59, 61, 69);
+  border: 0;
+  border-radius: 0.2em;
+  resize: vertical;
+  margin: 0;
+}
+
+#dropZone.terraform {
+  box-shadow: rgb(235, 219, 252) 0px 0px 0px 1px inset;
+  background-image: linear-gradient(315deg, rgb(244, 236, 255) 0%, rgb(252, 250, 255) 100%);
+}
+
+#dropZone.vault {
+  box-shadow: rgb(254, 236, 123) 0px 0px 0px 1px inset;
+  background-image: linear-gradient(315deg, rgb(255, 249, 207) 0%, rgb(255, 253, 242) 100%)
+}
+
+#dropZone.consul {
+  box-shadow: rgb(255, 206, 222) 0px 0px 0px 1px inset;
+  background-image: linear-gradient(315deg, rgb(255, 233, 241) 0%, rgb(255, 249, 251) 100%);
+}
+
+::-moz-selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+
+::selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}

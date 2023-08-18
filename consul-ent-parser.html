@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Results Parser for Consul Enterprise</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Roboto+Mono&display=swap" />
+  <link rel="stylesheet" href="css/normalize.min.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/main.js"></script>
+</head>
+
+<body>
+  <h1>Results Parser for Consul Enterprise</h1>
+  <div id="dropZone" class="consul">Drag results.json here to format results</div>
+  <div id="errorOutput"></div>
+  <div id="resultOutput">
+    <table>
+      <thead>
+        <tr>
+          <th>Check</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Terraform Enterprise Version</th>
+          <td id="tfeVersion"></td>
+        </tr>
+        <!-- Not available via API 
+        <tr>
+          <th>Terraform Enterprise License Expired</th>
+          <td id="licenseExpiredResult"></td>
+        </tr>
+        -->
+        <tr>
+          <th>Terraform Enterprise Consumption (workspaces)</th>
+          <td id="workspaceCountResult"></td>
+        </tr>
+        <tr>
+          <th>Sentinel Policy Operations</th>
+          <td id="sentinelChecksCompletedResult"></td>
+        </tr>
+        <tr>
+          <th>Cost Estimation Calculations</th>
+          <td id="costEstimationsCompletedResult"></td>
+        </tr>
+        <tr>
+          <th>Run Task Operations</th>
+          <td id="runTasksTotal"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script>
+    const dropZone = document.getElementById("dropZone");
+    dropZone.addEventListener("dragover", function (event) {
+      // Prevent default behavior
+      event.preventDefault();
+    });
+    dropZone.addEventListener("drop", function (event) {
+      // Get file from drag data
+      const file = event.dataTransfer.files[0];
+      // Read file
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = function () {
+        // Parse JSON 
+        const json = JSON.parse(reader.result);
+        // Process JSON data
+        formatTerraformJSON(json);
+      }
+      event.preventDefault();
+    });
+  </script>
+</body>
+
+</html>

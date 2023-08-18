@@ -2,11 +2,28 @@
 
 Modified hcdiag configuration for use by HashiCorp with Customers.
 
-ℹ️ The hcdiag-ext configuration (with hcdiag) can now be run on a remote host (eg laptop or desktop) as long as the host has network access to the cluster being queried. When querying a Vault or Consul cluster, the remote host currently also needs a vault or consul binary to pass [an initial hcdiag startup check](https://github.com/hashicorp/hcdiag/blob/main/agent/agent.go#L443-L467). This is not necessary for Terraform and we are looking to remove this requirement for all hcdiag-ext v0.5.x "API-only" use cases. The remote execution ability removes the need to install anything on the cluster, significantly easing use and reducing concerns around security and change management.
+The hcdiag-ext configuration (with hcdiag) can now be run on a remote host (eg laptop or desktop) as long as the host has network access to the cluster being queried and the necessary environment variables set. The remote execution ability removes the need to install anything on the cluster, significantly easing use and reducing concerns around security and change management.
 
-## Install the hcdiag binary or package on your local machine or a product instance
+You can either use the online version of these scripts hosted in GitHub pages at https://hashicorp.github.io/hcdiag-ext or download this repository and run the html files locally. All configuration generation and results parsing is handled with client side javascript. The only remote reuqest is to load some fonts from https://fonts.googleapis.com to match HashiCorp branding.
 
-- Download [hcdiag v0.5.0](https://releases.hashicorp.com/hcdiag/0.5.0/) manually and install on your PATH _or_ use a package manager:
+## Execution summary
+
+The installation and execution can be summarised in just a few steps, but is explained in detail below this summary.
+
+**New for v0.6.x**
+
+1. Install hcdiag on your local machine or product instance, either manually or using the HashiCorp package respositories
+1. Configure your local machine or product instance with the necessary environment variables to connect and authenticate
+1. Generate the hcdiag-ext configuration specific to your [Vault](vault-ent-configuration.html) and/or [Terraform](terraform-ent-configuration.html) use case
+    - Note: there are some constraints to consider for both products which are explained in the full instructions below
+1. Run hcdiag with the necessary arguments to use the hcdiag-ext specific configuration file
+1. Use the [Vault](vault-ent-parser.html) and/or [Terraform](terraform-ent-parser.html) results parsers to generate the results snapshot to share with your HashiCorp contact
+
+## Detailed execution instructions
+
+### Install the hcdiag binary or package on your local machine or a product instance
+
+- Download [hcdiag v0.5.0](https://releases.hashicorp.com/hcdiag/0.5.0/) manually and install on your PATH _or_ use a [package manager](https://www.hashicorp.com/official-packaging-guide):
 
   ```sh
   # Example RHEL package install steps
@@ -26,52 +43,53 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
   apt install hcdiag="0.5.0-1" --yes
   ```
 
-- For hcdiag-ext remote execution with Vault or Consul: Install the vault or consul binary or package on your local machine:
+- For hcdiag-ext remote execution, you need to have the Vault binary locally to pass [an initial hcdiag startup check](https://github.com/hashicorp/hcdiag/blob/v0.5.0/agent/agent.go#L443-L467):
 
   ```sh
   # Example RHEL package install steps
-  yum install vault consul -y
+  yum install vault
   ```
 
   ```sh
   # Example Debian package install steps
-  apt install vault consul --yes
+  apt install vault
   ```
   
   ```sh
   # Example Homebrew package install steps
-  brew install vault consul
+  brew install vault
   ```
   
   ```sh
   # Example Chocolatey package install steps
-  choco install vault consul
+  choco install vault
   ```
 
-## Install hcdiag-ext configuration on your local machine or a product instance
+### Install and run hcdiag-ext configuration on your local machine or a product instance
 
-- Download and unpack the [latest hcdiag-ext release package](https://github.com/hashicorp/hcdiag-ext/releases/latest) on your local machine or an instance in the product cluster:
+The configurations generated in hcdiag-ext v0.6.x only make GET API requests and do not make hcdiag attempt to run any other commands. Privileged access to the product APIs is required to provide complete results.
 
-  ```sh
-  # Example Linux steps
-  curl -Lk https://github.com/hashicorp/hcdiag-ext/archive/refs/tags/v0.5.0.zip -o hcdiag-ext-0.5.0.zip
-  unzip hcdiag-ext-0.5.0.zip
-  ```
+#### For Terraform Enterprise
+  
+- Access the hcdiag-ext [Configuration Generator for Terraform Enterprise](terraform-ent-configuration.html)
+- Either download the hcl file using the download button, or if you want to paste the file contents directly into a file, copy the hcl file contents to your clipboard using the copy button and create `hcdiag_terraform_configuration.hcl`
+- On your local machine or an instance in the product cluster, export the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables so hcdiag can query the product
+  - The token should be a user token for an account with administrator privileges so the admin API can be queried
+- Run hcdiag with specific configuration you have downloaded in the earlier steps `hcdiag run -vault -config /path/to/hcdiag_terraform_configuration.hcl`
 
-- If you are running this on an instance in the product cluster and it is [air gapped](https://en.wikipedia.org/wiki/Air_gap_(networking)), run the above commands through your web proxy and then copy the relevant hcl files to the target so hcdiag can access them prior to execution.
-- On your local machine or an instance in the product cluster, export the necessary environment variables so hcdiag can query the product:
-  - For Vault Enterprise, the `VAULT_TOKEN` and `VAULT_ADDR` environment variables must be set
-    - An example policy for hcdiag-ext (`hcdiag_vault_policy.hcl`) is contained in this release to limit the scope hcdiag has within Vault
-  - For Terraform Enterprise, the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables must be set
-    - The token should be a user token for an account with administrator privileges so the admin API can be queried
-  - For Consul Enterprise, the `CONSUL_TOKEN` and `CONSUL_HTTP_ADDR` environment variables must be set
 
-## Run hcdiag with the hcdiag-ext configuration
+#### For Vault Enterprise
 
-ℹ️ Current hcdiag-ext configurations only make API requests and do not make hcdiag attempt to run any other commands. Privileged access to the product API(s) is required to provide complete results.
+ℹ️ To get accurate data, you must know the Vault subscription start time in the format `YYYY-MM-DD`.
 
-1. Run hcdiag with specific configuration:
-    - Vault Enterprise: `hcdiag run -vault -config /path/to/hcdiag_vault.hcl`
-    - Terraform Enterprise: `hcdiag run -terraform-ent -config /path/to/hcdiag_terraform.hcl`
-    - Consul Enterprise: `hcdiag run -consul -config /path/to/hcdiag_consul.hcl`
-1. Submit the bundle to HashiCorp via the HashiCorp SendSafely portal link shared by your HashiCorp contact.
+- Access the hcdiag-ext [Configuration Generator for Vault Enterprise](vault-ent-configuration.html)
+- Either download the hcl file using the download button, or if you want to paste the file contents directly into a file, copy the hcl file contents to your clipboard using the copy button and create `hcdiag_vault_configuration.hcl`
+- On your local machine or an instance in the product cluster, export the `VAULT_TOKEN` and `VAULT_ADDR` environment variables so hcdiag can query the product
+  - An example Vault policy for hcdiag-ext read-only access to the Vault API is contained in this release [`hcdiag_vault_policy.hcl`](hcdiag_vault_policy.hcl) to ensure the principle of least privilege
+- Run hcdiag with specific configuration you have downloaded in the earlier steps `hcdiag run -vault -config /path/to/hcdiag_vault_configuration.hcl`
+
+### Parse the results file to create a summary table of product data
+
+- Unpack the hcdiag tar.gz bundle that was generated during the hcdiag run
+- If running hcdiag on the product instance, copy the `results.json` file from the product instance to your local machine
+- Use the [Vault](vault-ent-parser.html) and/or [Terraform](terraform-ent-parser.html) results parsers to generate the results snapshot to share with your HashiCorp contact

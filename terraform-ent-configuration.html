@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Configuration Generator for Terraform Enterprise</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Roboto+Mono&display=swap" />
+  <link rel="stylesheet" href="css/normalize.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/main.js"></script>
+</head>
+
+<body>
+  <h1>Configuration Generator for Terraform Enterprise</h1>
+  <p>Download the hcl configuration using the download button, or if you want to paste the file contents directly into a
+    file, copy the hcl file contents to your clipboard using the copy button.</p>
+  <p>On your local machine or an instance in the product cluster, export the <span class="code-block">TFE_TOKEN</span>
+    and <span class="code-block">TFE_HTTP_ADDR</span> environment variables so hcdiag can query the product.</p>
+  <p>The token should be a user token for an account with administrator privileges so the admin API can be queried.</p>
+  <p>For more information about how to configure hcdiag-ext, <a href="https://github.com/hashicorp/hcdiag-ext">see the README</a>.</p>
+  <div class="code-block">
+    <pre>
+<code>
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
+# Terraform Enterprise checks
+
+host {
+  selects = [":"] # noop to ensure no other default hcdiag host commands are auto-loaded
+  shell {
+    run = ":"
+  }
+}
+
+product "terraform-ent" {
+  selects = [
+              "GET /api/v2/admin/release",
+              "GET /api/v2/admin/runs?page%5Bsize%5D=1",
+              "GET /api/v2/admin/workspaces?page%5Bsize%5D=1",
+            ]
+
+# check version
+  GET {
+    path = "/api/v2/admin/release"
+  }
+
+# check enterprise features in use
+  GET {
+    path = "/api/v2/admin/runs?page%5Bsize%5D=1"
+  }
+
+# check workspace count
+  GET {
+    path = "/api/v2/admin/workspaces?page%5Bsize%5D=1" 
+    }
+  }</code>
+    </pre>
+  </div>
+  <button id="downloadCode" class="terraform" onclick="downloadCode('terraform')">Download hcdiag-ext configuration file</button> or
+  <button id="copyCode" class="terraform" onclick="copyCode()">Copy to clipboard</button>
+</body>
+
+</html>

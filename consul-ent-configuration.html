@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Configuration Generator for Consul Enterprise</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins|Roboto+Mono&display=swap" />
+  <link rel="stylesheet" href="css/normalize.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/main.js"></script>
+</head>
+
+<body>
+  <h1>Configuration Generator for Consul Enterprise</h1>
+  <p>Download the hcl configuration using the download button, or if you want to paste the file contents directly into a
+    file, copy the hcl file contents to your clipboard using the copy button.</p>
+  <p>On your local machine or an instance in the product cluster, export the <span class="code-block">CONSUL_TOKEN</span>
+    and <span class="code-block">CONSUL_HTTP_ADDR</span> environment variables so hcdiag can query the product.</p>
+  <p>For more information about how to configure hcdiag-ext, <a href="https://github.com/hashicorp/hcdiag-ext">see the README</a>.</p>
+  <div class="code-block">
+    <pre>
+<code>
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
+# Consul Enterprise checks
+
+host {
+  selects = [":"] # noop to ensure no other default hcdiag host commands are auto-loaded
+  shell {
+    run = ":"
+  }
+}
+
+product "consul" {
+  selects = [
+              "GET /v1/agent/self",
+              "GET /v1/catalog/services",
+              "GET /v1/catalog/services?filter='ServiceName==%22consul-snapshot%22'",
+              "GET /v1/operator/autopilot/configuration",
+              "GET /v1/operator/license",
+              "GET /v1/operator/usage?global=true"
+            ]
+
+# check consul version is recent
+  GET {
+    path = "/v1/agent/self"
+  }
+
+# get services list and count
+  GET {
+    path = "/v1/catalog/services"
+  }
+
+# check if consul snapshot service is running for automated backups
+  GET {
+    path = "/v1/catalog/services?filter='ServiceName==%22consul-snapshot%22'"
+  }
+
+# check autopilot is configured
+  GET {
+    path = "/v1/operator/autopilot/configuration"
+  }
+  
+# check consul license
+  GET {
+    path = "/v1/operator/license"
+  }
+
+# check consul usage
+  GET {
+    path = "/v1/operator/usage?global=true"
+  }
+}
+</code>
+    </pre>
+  </div>
+  <button id="downloadCode" class="consul" onclick="downloadCode('consul')">Download hcdiag-ext configuration file</button> or
+  <button id="copyCode" class="consul" onclick="copyCode()">Copy to clipboard</button>
+</body>
+
+</html>
