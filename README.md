@@ -75,7 +75,7 @@ The configurations generated in hcdiag-ext v0.6.x only make GET API requests and
 - Either download the hcl file using the download button, or if you want to paste the file contents directly into a file, copy the hcl file contents to your clipboard using the copy button and create `hcdiag_terraform_configuration.hcl`
 - On your local machine or an instance in the product cluster, export the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables so hcdiag can query the product
   - The token should be a user token for an account with administrator privileges so the admin API can be queried
-- Run hcdiag with specific configuration you have downloaded in the earlier steps `hcdiag run -vault -config /path/to/hcdiag_terraform_configuration.hcl`
+- Run hcdiag with specific configuration you have downloaded in the earlier steps `hcdiag run -terraform-ent -config /path/to/hcdiag_terraform_configuration.hcl`
 
 
 #### For Vault Enterprise
