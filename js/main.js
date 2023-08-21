@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 function validDate(dateString) {
   // Regex to match YYYY-MM-DD
   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
