@@ -36,7 +36,7 @@
       const yearQuery = `/v1/sys/internal/counters/activity?start_time=${startOfTimeWindow}&end_time=${endOfTimeWindow}`;
       timeQuerySelects.push(yearQuery);
     }
-    const startOfFinalWindow = startTime.clone()
+    const startTimeThisYear = startTime.clone()
       .startOf('month')
       .milliseconds(0)
       .year(nowTime.get('year'))
@@ -46,9 +46,19 @@
       .endOf('month')
       .milliseconds(999)
       .format();
-    const finalQuery = `/v1/sys/internal/counters/activity?start_time=${startOfFinalWindow}&end_time=${endOfFinalWindow}`;
-    timeQuerySelects.push(finalQuery);
-    //console.log(timeQuerySelects);
+    if (startTimeThisYear > endOfFinalWindow) {
+      const startOfFinalWindow = startTime.clone()
+        .startOf('month')
+        .milliseconds(0)
+        .year(nowTime.get('year') - 1)
+        .format();
+      const finalQuery = `/v1/sys/internal/counters/activity?start_time=${startOfFinalWindow}&end_time=${endOfFinalWindow}`;
+      timeQuerySelects.push(finalQuery);
+    } else {
+      const startOfFinalWindow = startTimeThisYear;
+      const finalQuery = `/v1/sys/internal/counters/activity?start_time=${startOfFinalWindow}&end_time=${endOfFinalWindow}`;
+      timeQuerySelects.push(finalQuery);
+    };
   </script>
 </head>
 
