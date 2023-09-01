@@ -4,7 +4,7 @@ Modified hcdiag configuration for use by HashiCorp with Customers.
 
 The hcdiag-ext configuration (with hcdiag) can now be run on a remote host (eg laptop or desktop) as long as the host has network access to the cluster being queried and the necessary environment variables set. The remote execution ability removes the need to install anything on the cluster, significantly easing use and reducing concerns around security and change management.
 
-You can either use the online version of these scripts hosted in GitHub pages at https://hashicorp.github.io/hcdiag-ext or download this repository and run the html files locally. All configuration generation and results parsing is handled with client side javascript. The only remote reuqest is to load some fonts from https://fonts.googleapis.com to match HashiCorp branding.
+You can either use the online version of these scripts hosted in GitHub pages at https://hashicorp.github.io/hcdiag-ext or download this repository and run the html files locally. All configuration generation and results parsing is handled with client side javascript. The only remote request is to load some fonts from https://fonts.googleapis.com to match HashiCorp branding.
 
 ## Execution summary
 
