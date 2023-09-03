@@ -18,8 +18,8 @@
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const startTimeParam = urlParams.get("start_time");
-    const startTime = moment(startTimeParam).utc();
-    const nowTime = moment().utc();
+    const startTime = moment(startTimeParam).utc(true);
+    const nowTime = moment().utc(true);
     const subWindowYears = nowTime.diff(startTime, 'years');
     const timeQuerySelects = [];
     for (let i = 0; i < subWindowYears; i++) {
