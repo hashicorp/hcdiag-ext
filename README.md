@@ -14,10 +14,10 @@ The installation and execution can be summarised in just a few steps, but is exp
 
 1. Install hcdiag on your local machine or product instance, either manually or using the HashiCorp package respositories
 1. Configure your local machine or product instance with the necessary environment variables to connect and authenticate
-1. Generate the hcdiag-ext configuration specific to your [Vault](vault-ent-configuration.html) and/or [Terraform](terraform-ent-configuration.html) use case
+1. Generate the hcdiag-ext configuration specific to your [Vault](https://hashicorp.github.io/hcdiag-ext/vault-ent-configuration.html) and/or [Terraform](https://hashicorp.github.io/hcdiag-ext/terraform-ent-configuration.html) use case
     - Note: there are some constraints to consider for both products which are explained in the full instructions below
 1. Run hcdiag with the necessary arguments to use the hcdiag-ext specific configuration file
-1. Use the [Vault](vault-ent-parser.html) and/or [Terraform](terraform-ent-parser.html) results parsers to generate the results snapshot to share with your HashiCorp contact
+1. Use the [Vault](https://hashicorp.github.io/hcdiag-ext/vault-ent-parser.html) and/or [Terraform](https://hashicorp.github.io/hcdiag-ext/terraform-ent-parser.html) results parsers to generate the results snapshot to share with your HashiCorp contact
 
 ## Detailed execution instructions
 
@@ -71,7 +71,7 @@ The configurations generated in hcdiag-ext v0.6.x only make GET API requests and
 
 #### For Terraform Enterprise
   
-- Access the hcdiag-ext [Configuration Generator for Terraform Enterprise](terraform-ent-configuration.html)
+- Access the hcdiag-ext [Configuration Generator for Terraform Enterprise](https://hashicorp.github.io/hcdiag-ext/terraform-ent-configuration.html)
 - Either download the hcl file using the download button, or if you want to paste the file contents directly into a file, copy the hcl file contents to your clipboard using the copy button and create `hcdiag_terraform_configuration.hcl`
 - On your local machine or an instance in the product cluster, export the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables so hcdiag can query the product
   - The token should be a user token for an account with administrator privileges so the admin API can be queried
@@ -82,7 +82,7 @@ The configurations generated in hcdiag-ext v0.6.x only make GET API requests and
 
 ℹ️ To get accurate data, you must know the Vault subscription start time in the format `YYYY-MM-DD`.
 
-- Access the hcdiag-ext [Configuration Generator for Vault Enterprise](vault-ent-configuration.html)
+- Access the hcdiag-ext [Configuration Generator for Vault Enterprise](https://hashicorp.github.io/hcdiag-ext/vault-ent-configuration.html)
 - Either download the hcl file using the download button, or if you want to paste the file contents directly into a file, copy the hcl file contents to your clipboard using the copy button and create `hcdiag_vault_configuration.hcl`
 - On your local machine or an instance in the product cluster, export the `VAULT_TOKEN` and `VAULT_ADDR` environment variables so hcdiag can query the product
   - An example Vault policy for hcdiag-ext read-only access to the Vault API is contained in this release [`hcdiag_vault_policy.hcl`](hcdiag_vault_policy.hcl) to ensure the principle of least privilege
@@ -92,4 +92,4 @@ The configurations generated in hcdiag-ext v0.6.x only make GET API requests and
 
 - Unpack the hcdiag tar.gz bundle that was generated during the hcdiag run
 - If running hcdiag on the product instance, copy the `results.json` file from the product instance to your local machine
-- Use the [Vault](vault-ent-parser.html) and/or [Terraform](terraform-ent-parser.html) results parsers to generate the results snapshot to share with your HashiCorp contact
+- Use the [Vault](https://hashicorp.github.io/hcdiag-ext/vault-ent-parser.html) and/or [Terraform](https://hashicorp.github.io/hcdiag-ext/terraform-ent-parser.html) results parsers to generate the results snapshot to share with your HashiCorp contact
