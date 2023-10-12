@@ -71,7 +71,7 @@ The configurations generated in hcdiag-ext v0.6.x only make GET API requests and
 
 #### For Terraform Enterprise
   
-- Access the hcdiag-ext [Configuration Generator for Terraform Enterprise](terraform-ent-configuration.html)
+- Access the hcdiag-ext [Configuration Generator for Terraform Enterprise](https://hashicorp.github.io/hcdiag-ext/terraform-ent-configuration.html)
 - Either download the hcl file using the download button, or if you want to paste the file contents directly into a file, copy the hcl file contents to your clipboard using the copy button and create `hcdiag_terraform_configuration.hcl`
 - On your local machine or an instance in the product cluster, export the `TFE_TOKEN` and `TFE_HTTP_ADDR` environment variables so hcdiag can query the product
   - The token should be a user token for an account with administrator privileges so the admin API can be queried
@@ -82,7 +82,7 @@ The configurations generated in hcdiag-ext v0.6.x only make GET API requests and
 
 ℹ️ To get accurate data, you must know the Vault subscription start time in the format `YYYY-MM-DD`.
 
-- Access the hcdiag-ext [Configuration Generator for Vault Enterprise](vault-ent-configuration.html)
+- Access the hcdiag-ext [Configuration Generator for Vault Enterprise](https://hashicorp.github.io/hcdiag-ext/vault-ent-configuration.html)
 - Either download the hcl file using the download button, or if you want to paste the file contents directly into a file, copy the hcl file contents to your clipboard using the copy button and create `hcdiag_vault_configuration.hcl`
 - On your local machine or an instance in the product cluster, export the `VAULT_TOKEN` and `VAULT_ADDR` environment variables so hcdiag can query the product
   - An example Vault policy for hcdiag-ext read-only access to the Vault API is contained in this release [`hcdiag_vault_policy.hcl`](hcdiag_vault_policy.hcl) to ensure the principle of least privilege
