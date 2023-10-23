@@ -14,10 +14,10 @@ The installation and execution can be summarised in just a few steps, but is exp
 
 1. Install hcdiag on your local machine or product instance, either manually or using the HashiCorp package respositories
 1. Configure your local machine or product instance with the necessary environment variables to connect and authenticate
-1. Generate the hcdiag-ext configuration specific to your [Vault](vault-ent-configuration.html) and/or [Terraform](terraform-ent-configuration.html) use case
+1. Generate the hcdiag-ext configuration specific to your [Vault](https://hashicorp.github.io/hcdiag-ext/vault-ent-configuration.html) and/or [Terraform](https://hashicorp.github.io/hcdiag-ext/terraform-ent-configuration.html) use case
     - Note: there are some constraints to consider for both products which are explained in the full instructions below
 1. Run hcdiag with the necessary arguments to use the hcdiag-ext specific configuration file
-1. Use the [Vault](vault-ent-parser.html) and/or [Terraform](terraform-ent-parser.html) results parsers to generate the results snapshot to share with your HashiCorp contact
+1. Use the [Vault](https://hashicorp.github.io/hcdiag-ext/vault-ent-parser.html) and/or [Terraform](https://hashicorp.github.io/hcdiag-ext/terraform-ent-parser.html) results parsers to generate the results snapshot to share with your HashiCorp contact
 
 ## Detailed execution instructions
 
@@ -92,4 +92,4 @@ The configurations generated in hcdiag-ext v0.6.x only make GET API requests and
 
 - Unpack the hcdiag tar.gz bundle that was generated during the hcdiag run
 - If running hcdiag on the product instance, copy the `results.json` file from the product instance to your local machine
-- Use the [Vault](vault-ent-parser.html) and/or [Terraform](terraform-ent-parser.html) results parsers to generate the results snapshot to share with your HashiCorp contact
+- Use the [Vault](https://hashicorp.github.io/hcdiag-ext/vault-ent-parser.html) and/or [Terraform](https://hashicorp.github.io/hcdiag-ext/terraform-ent-parser.html) results parsers to generate the results snapshot to share with your HashiCorp contact
