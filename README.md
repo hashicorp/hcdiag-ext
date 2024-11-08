@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> The hcdiag-ext configuration is no longer maintained and should not be used as the primary tool for gathering usage data.
+
 # hcdiag-ext
 
 Modified hcdiag configuration for use by HashiCorp with Customers.
